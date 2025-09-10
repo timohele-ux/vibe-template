@@ -1,6 +1,6 @@
 import type { Case, Patient, Message, DashboardMetrics, User } from './types';
 
-// Mock Patients
+// Enhanced Mock Patients with complex medical histories
 const mockPatients: Patient[] = [
   {
     id: 'p1',
@@ -18,12 +18,12 @@ const mockPatients: Patient[] = [
       portal: true
     },
     medicalInfo: {
-      conditions: ['Hypertension', 'Type 2 Diabetes'],
-      medications: ['Metformin 500mg', 'Lisinopril 10mg'],
-      allergies: ['Penicillin'],
+      conditions: ['Hypertension', 'Type 2 Diabetes', 'Hyperlipidemia'],
+      medications: ['Metformin 1000mg twice daily', 'Lisinopril 10mg daily', 'Atorvastatin 20mg at bedtime'],
+      allergies: ['Penicillin (rash)', 'Sulfa drugs (hives)'],
       lastVisit: '2024-08-15'
     },
-    riskFlags: ['Multiple medications']
+    riskFlags: ['Multiple medications', 'Diabetes complications', 'Cardiovascular risk']
   },
   {
     id: 'p2',
@@ -41,22 +41,22 @@ const mockPatients: Patient[] = [
       portal: true
     },
     medicalInfo: {
-      conditions: ['Asthma'],
-      medications: ['Albuterol Inhaler'],
-      allergies: [],
+      conditions: ['Asthma', 'Exercise-Induced Bronchospasm', 'Seasonal Allergies'],
+      medications: ['Albuterol MDI 2 puffs as needed', 'Fluticasone 110mcg twice daily', 'Cetirizine 10mg daily'],
+      allergies: ['Tree pollen', 'Cat dander', 'Dust mites'],
       lastVisit: '2024-09-01'
     },
-    riskFlags: []
+    riskFlags: ['Severe asthma exacerbations', 'Emergency department visits']
   },
   {
     id: 'p3',
     firstName: 'Emma',
-    lastName: 'Williams',
+    lastName: 'Rodriguez',
     dateOfBirth: '1992-07-08',
-    email: 'emma.williams@email.com',
+    email: 'emma.rodriguez@email.com',
     phone: '+1-555-0125',
     insuranceId: 'INS123458',
-    preferredLanguage: 'en',
+    preferredLanguage: 'es',
     communicationPreferences: {
       email: true,
       sms: true,
@@ -64,38 +64,204 @@ const mockPatients: Patient[] = [
       portal: false
     },
     medicalInfo: {
-      conditions: [],
-      medications: [],
-      allergies: ['Shellfish'],
+      conditions: ['Migraine Headaches', 'Anxiety Disorder', 'Iron Deficiency Anemia'],
+      medications: ['Sumatriptan 50mg as needed', 'Sertraline 50mg daily', 'Iron Sulfate 325mg twice daily'],
+      allergies: ['Shellfish (anaphylaxis)', 'NSAIDs (stomach upset)'],
       lastVisit: '2024-08-30'
     },
-    riskFlags: []
+    riskFlags: ['Frequent migraines affecting work', 'Anxiety management']
+  },
+  {
+    id: 'p4',
+    firstName: 'Robert',
+    lastName: 'Thompson',
+    dateOfBirth: '1955-01-12',
+    email: 'robert.thompson@email.com',
+    phone: '+1-555-0126',
+    insuranceId: 'MEDICARE-789',
+    preferredLanguage: 'en',
+    communicationPreferences: {
+      email: false,
+      sms: false,
+      phone: true,
+      portal: true
+    },
+    medicalInfo: {
+      conditions: ['Chronic Heart Failure', 'Atrial Fibrillation', 'Chronic Kidney Disease Stage 3', 'COPD'],
+      medications: ['Metoprolol 100mg twice daily', 'Warfarin 5mg daily', 'Furosemide 40mg daily', 'Albuterol nebulizer'],
+      allergies: ['Penicillin (anaphylaxis)', 'ACE inhibitors (angioedema)'],
+      lastVisit: '2024-08-28'
+    },
+    riskFlags: ['Multiple comorbidities', 'Anticoagulation therapy', 'Fall risk', 'Frequent hospitalizations']
+  },
+  {
+    id: 'p5',
+    firstName: 'Lisa',
+    lastName: 'Wang',
+    dateOfBirth: '1990-05-20',
+    email: 'lisa.wang@email.com',
+    phone: '+1-555-0127',
+    insuranceId: 'BCBS-456',
+    preferredLanguage: 'en',
+    communicationPreferences: {
+      email: true,
+      sms: true,
+      phone: false,
+      portal: true
+    },
+    medicalInfo: {
+      conditions: ['Hypothyroidism', 'PCOS', 'Vitamin D Deficiency'],
+      medications: ['Levothyroxine 100mcg daily', 'Metformin 500mg twice daily', 'Vitamin D3 2000 IU daily'],
+      allergies: ['Latex (contact dermatitis)'],
+      lastVisit: '2024-09-05'
+    },
+    riskFlags: ['Endocrine disorders', 'Fertility concerns']
   }
 ];
 
-// Mock Messages
-const createMessages = (patientName: string, caseId: string): Message[] => [
-  {
-    id: `msg-${caseId}-1`,
-    content: `Hi, I'm experiencing some concerning symptoms and would like to schedule an appointment as soon as possible.`,
-    timestamp: new Date(Date.now() - 2 * 60 * 60 * 1000),
-    senderType: 'patient',
-    senderId: 'p1',
-    senderName: patientName,
-    isRead: false,
-    sentiment: 'neutral'
-  },
-  {
-    id: `msg-${caseId}-2`,
-    content: `Thank you for reaching out. I've reviewed your message and understand your concerns. Based on your symptoms, I'd recommend we schedule you for an appointment this week. Are you available Tuesday morning?`,
-    timestamp: new Date(Date.now() - 1.5 * 60 * 60 * 1000),
-    senderType: 'ai',
-    senderId: 'ai-1',
-    senderName: 'AI Assistant',
-    isRead: true,
-    sentiment: 'positive'
+// Enhanced Messages with realistic healthcare communication patterns
+const createHealthcareMessages = (patientName: string, caseId: string, scenario: string): Message[] => {
+  const baseTime = Date.now() - 4 * 60 * 60 * 1000; // 4 hours ago
+  
+  switch (scenario) {
+    case 'medication-question':
+      return [
+        {
+          id: `msg-${caseId}-1`,
+          content: `Hi, I have a question about my blood pressure medication. I've been taking Lisinopril for about 2 weeks now and I'm experiencing a persistent dry cough. I've read this could be a side effect. Should I be concerned? Should I stop taking it?`,
+          timestamp: new Date(baseTime),
+          senderType: 'patient',
+          senderId: 'p1',
+          senderName: patientName,
+          isRead: true,
+          sentiment: 'neutral'
+        },
+        {
+          id: `msg-${caseId}-2`,
+          content: `Thank you for reaching out about your medication side effects. A dry cough is indeed a known side effect of ACE inhibitors like Lisinopril, occurring in about 10-15% of patients. This typically appears within the first few weeks of starting the medication.
+
+I recommend you do not stop the medication abruptly. Instead, let's schedule you for an appointment this week so we can evaluate your blood pressure control and discuss alternative medications if needed. In the meantime, please continue taking the Lisinopril as prescribed.
+
+We can consider switching to an ARB (like Losartan) which typically doesn't cause the cough side effect.`,
+          timestamp: new Date(baseTime + 20 * 60 * 1000), // 20 mins later
+          senderType: 'ai',
+          senderId: 'ai-1',
+          senderName: 'AI Assistant',
+          isRead: true,
+          sentiment: 'positive'
+        }
+      ];
+      
+    case 'urgent-appointment':
+      return [
+        {
+          id: `msg-${caseId}-1`,
+          content: `I need to be seen urgently. I've been having chest pain on and off for the past 3 hours. It's a sharp pain that comes and goes, and I'm also feeling short of breath. My heart rate feels irregular. I have a history of heart problems. Should I go to the ER or can I be seen at the clinic today?`,
+          timestamp: new Date(baseTime),
+          senderType: 'patient',
+          senderId: 'p4',
+          senderName: patientName,
+          isRead: true,
+          sentiment: 'negative'
+        },
+        {
+          id: `msg-${caseId}-2`,
+          content: `This requires immediate medical attention. Given your symptoms of chest pain, shortness of breath, and irregular heart rate, combined with your cardiac history, you should go to the emergency room immediately.
+
+Please do not drive yourself - call 911 or have someone drive you to the nearest emergency room. These symptoms need urgent evaluation and cannot wait for a clinic appointment.
+
+I'm also notifying Dr. Johnson about this message so she's aware of your situation.`,
+          timestamp: new Date(baseTime + 3 * 60 * 1000), // 3 mins later
+          senderType: 'staff',
+          senderId: 'dr-johnson',
+          senderName: 'Dr. Sarah Johnson',
+          isRead: true,
+          sentiment: 'negative'
+        }
+      ];
+      
+    case 'prescription-refill':
+      return [
+        {
+          id: `msg-${caseId}-1`,
+          content: `Hi, I need a refill on my asthma medications. My Fluticasone inhaler is almost empty and I have about 3 days left of my Albuterol. Can you please send refills to CVS Pharmacy on Main Street? My insurance recently changed so please make sure the new information is on file.`,
+          timestamp: new Date(baseTime),
+          senderType: 'patient',
+          senderId: 'p2',
+          senderName: patientName,
+          isRead: true,
+          sentiment: 'neutral'
+        },
+        {
+          id: `msg-${caseId}-2`,
+          content: `I can help you with those prescription refills. I've checked your file and see that you're due for refills on both medications.
+
+I've sent the prescriptions to CVS on Main Street:
+- Fluticasone 110mcg inhaler - 1 inhaler with 2 refills
+- Albuterol MDI - 1 inhaler with 5 refills
+
+Regarding your insurance, I'll need you to provide the updated information. You can either:
+1. Upload a photo of your new insurance card through the patient portal
+2. Call our office at (555) 123-4567
+3. Bring the card to your next appointment
+
+The prescriptions should be ready for pickup within 2 hours. Is there anything else I can help you with regarding your asthma management?`,
+          timestamp: new Date(baseTime + 15 * 60 * 1000), // 15 mins later
+          senderType: 'ai',
+          senderId: 'ai-1',
+          senderName: 'AI Assistant',
+          isRead: true,
+          sentiment: 'positive'
+        }
+      ];
+      
+    case 'lab-results-question':
+      return [
+        {
+          id: `msg-${caseId}-1`,
+          content: `I received a message that my lab results are available in the portal. I looked at them but I don't understand what they mean. My cholesterol numbers seem high and there's something about my liver enzymes being elevated. Should I be worried? Do I need to change my medications?`,
+          timestamp: new Date(baseTime),
+          senderType: 'patient',
+          senderId: 'p1',
+          senderName: patientName,
+          isRead: true,
+          sentiment: 'negative'
+        },
+        {
+          id: `msg-${caseId}-2`,
+          content: `I understand your concerns about your lab results. Let me help explain what these findings mean:
+
+**Cholesterol levels**: Your LDL (bad cholesterol) is elevated at 165 mg/dL (goal is <100 for someone with diabetes). This suggests we may need to adjust your current statin dose or consider additional therapy.
+
+**Liver enzymes**: The mild elevation in your ALT could be related to your statin medication or your diabetes management. This needs clinical evaluation.
+
+I'm scheduling you for an appointment with Dr. Johnson within the next week to review these results in detail and discuss any necessary medication adjustments. Please continue taking all your current medications as prescribed until you speak with the doctor.
+
+In the meantime, continue following your diabetic diet and exercise routine. Do you have any specific questions about these results?`,
+          timestamp: new Date(baseTime + 25 * 60 * 1000), // 25 mins later
+          senderType: 'ai',
+          senderId: 'ai-1',
+          senderName: 'AI Assistant',
+          isRead: true,
+          sentiment: 'neutral'
+        }
+      ];
+      
+    default:
+      return [
+        {
+          id: `msg-${caseId}-1`,
+          content: `I have a general question about my health and would like to schedule an appointment when convenient.`,
+          timestamp: new Date(baseTime),
+          senderType: 'patient',
+          senderId: 'p3',
+          senderName: patientName,
+          isRead: false,
+          sentiment: 'neutral'
+        }
+      ];
   }
-];
+};
 
 // Mock Cases
 export const mockCases: Case[] = [
@@ -111,7 +277,7 @@ export const mockCases: Case[] = [
     tags: ['chest-pain', 'breathing', 'urgent'],
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
-    messages: createMessages('Sarah Johnson', 'case-1'),
+    messages: createHealthcareMessages('Sarah Johnson', 'case-1', 'urgent-appointment'),
     aiResponses: [
       {
         id: 'ai-1-1',
@@ -163,7 +329,7 @@ Your safety is our top priority. Please seek emergency care right away and follo
     assignedTo: 'dr-smith',
     createdAt: new Date(Date.now() - 6 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 3 * 60 * 60 * 1000),
-    messages: createMessages('Michael Chen', 'case-2'),
+    messages: createHealthcareMessages('Michael Chen', 'case-2', 'prescription-refill'),
     aiResponses: [],
     estimatedResponseTime: 30,
     satisfactionScore: undefined
@@ -180,7 +346,7 @@ Your safety is our top priority. Please seek emergency care right away and follo
     tags: ['physical', 'wellness', 'routine'],
     createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
-    messages: createMessages('Emma Williams', 'case-3'),
+    messages: createHealthcareMessages('Emma Rodriguez', 'case-3', 'default'),
     aiResponses: [
       {
         id: 'ai-3-1',
@@ -264,7 +430,7 @@ Which appointment would work best for you?`,
     assignedTo: 'dr-wilson',
     createdAt: new Date(Date.now() - 12 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
-    messages: createMessages('Sarah Johnson', 'case-4'),
+    messages: createHealthcareMessages('Sarah Johnson', 'case-4', 'medication-question'),
     aiResponses: [],
     estimatedResponseTime: 15,
     satisfactionScore: undefined
@@ -282,7 +448,7 @@ Which appointment would work best for you?`,
     assignedTo: 'dr-smith',
     createdAt: new Date(Date.now() - 48 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 24 * 60 * 60 * 1000),
-    messages: createMessages('Michael Chen', 'case-5'),
+    messages: createHealthcareMessages('Michael Chen', 'case-5', 'lab-results-question'),
     aiResponses: [],
     estimatedResponseTime: 60,
     actualResponseTime: 45,

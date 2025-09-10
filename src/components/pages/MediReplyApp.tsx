@@ -1,205 +1,259 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { MediReplyDashboard } from '../templates';
 import { DashboardProvider, useDashboard, dashboardActions } from '../../lib/DashboardContext';
+import { useDashboardDataService } from '../../lib/DashboardDataService';
+import { useCases, useAIResponses, useNotifications } from '../../lib/hooks';
 import { mockCases, mockUsers, mockMetrics } from '../../mockData';
+import { healthcareScenarios } from '../../lib/enhancedMockData';
 import type { Case, User, DashboardMetrics } from '../../types';
 
-// Inner component that uses the dashboard context
+// Inner component that uses the dashboard context and enhanced data services
 const MediReplyDashboardContainer: React.FC = () => {
   const { state, dispatch } = useDashboard();
+  const dataService = useDashboardDataService();
+  const { generateAIResponse, approveAIResponse, rejectAIResponse } = useAIResponses();
+  const { addNotification } = useNotifications();
 
-  // Initialize data on mount
-  React.useEffect(() => {
+  // Initialize data on mount with enhanced scenarios
+  useEffect(() => {
     dispatch(dashboardActions.setCases(mockCases));
-  }, [dispatch]);
+    
+    // Add a notification about system status
+    addNotification({
+      type: 'info',
+      title: 'System Status',
+      message: 'Real-time monitoring active. All systems operational.',
+    });
+  }, [dispatch, addNotification]);
 
-  // Event handlers
+  // Demonstrate enhanced data integration every 30 seconds
+  useEffect(() => {
+    const interval = setInterval(() => {
+      // Simulate random healthcare scenarios
+      const scenarios = Object.values(healthcareScenarios.appointment.routine);
+      const randomScenario = scenarios[Math.floor(Math.random() * scenarios.length)];
+      
+      if (Math.random() < 0.3) { // 30% chance
+        addNotification({
+          type: 'info',
+          title: 'New Patient Inquiry',
+          message: randomScenario.substring(0, 50) + '...',
+        });
+      }
+    }, 30000);
+
+    return () => clearInterval(interval);
+  }, [addNotification]);
+
+  // Event handlers with enhanced functionality
   const handleNavigate = (section: string) => {
     console.log('Navigating to:', section);
-    // In a real app, this would handle routing
+    addNotification({
+      type: 'info',
+      title: 'Navigation',
+      message: `Navigated to ${section} section`,
+    });
   };
 
   const handleCaseSelect = (caseId: string) => {
     dispatch(dashboardActions.selectCase(caseId));
+    
+    // Add contextual notification
+    const selectedCase = state.cases.find(c => c.id === caseId);
+    if (selectedCase) {
+      addNotification({
+        type: 'info',
+        title: 'Case Selected',
+        message: `Now viewing case for ${selectedCase.patient.firstName} ${selectedCase.patient.lastName}`,
+      });
+    }
   };
 
   const handleSendMessage = async (caseId: string, content: string, isDraft?: boolean) => {
     if (!state.currentUser) return;
 
-    const message = {
-      id: `msg-${Date.now()}`,
-      content,
-      timestamp: new Date(),
-      senderType: 'staff' as const,
-      senderId: state.currentUser.id,
-      senderName: `${state.currentUser.firstName} ${state.currentUser.lastName}`,
-      isRead: true,
-    };
+    try {
+      await dataService.sendMessage(caseId, content, 'staff');
+      
+      // Update case status if not draft
+      if (!isDraft) {
+        await dataService.updateCaseStatus(caseId, 'in-progress');
+      }
 
-    dispatch(dashboardActions.sendMessage(caseId, message));
-
-    // Update case status if not draft
-    if (!isDraft) {
-      dispatch(dashboardActions.updateCaseStatus(caseId, 'in-progress'));
+      addNotification({
+        type: 'success',
+        title: 'Message Sent',
+        message: `Message ${isDraft ? 'saved as draft' : 'sent successfully'}`,
+        caseId,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Send Failed',
+        message: 'Failed to send message. Please try again.',
+        caseId,
+      });
     }
-
-    // Add success notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'success',
-      title: 'Message Sent',
-      message: `Message ${isDraft ? 'saved as draft' : 'sent successfully'}`,
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
   };
 
   const handleApproveAIResponse = async (caseId: string, responseId: string, modifications?: string[]) => {
     if (!state.currentUser) return;
 
-    dispatch(dashboardActions.approveAIResponse(caseId, responseId, state.currentUser.id));
+    try {
+      await approveAIResponse(responseId, modifications);
+      dispatch(dashboardActions.approveAIResponse(caseId, responseId, state.currentUser.id));
 
-    // Convert approved AI response to a staff message
-    const case_ = state.cases.find(c => c.id === caseId);
-    const aiResponse = case_?.aiResponses.find(r => r.id === responseId);
+      // Convert approved AI response to a staff message
+      const case_ = state.cases.find(c => c.id === caseId);
+      const aiResponse = case_?.aiResponses.find(r => r.id === responseId);
 
-    if (aiResponse) {
-      const message = {
-        id: `msg-${Date.now()}`,
-        content: aiResponse.content,
-        timestamp: new Date(),
-        senderType: 'staff' as const,
-        senderId: state.currentUser.id,
-        senderName: `${state.currentUser.firstName} ${state.currentUser.lastName}`,
-        isRead: true,
-      };
+      if (aiResponse) {
+        await dataService.sendMessage(caseId, aiResponse.content, 'staff');
+        await dataService.updateCaseStatus(caseId, 'in-progress');
+      }
 
-      dispatch(dashboardActions.sendMessage(caseId, message));
-      dispatch(dashboardActions.updateCaseStatus(caseId, 'in-progress'));
+      addNotification({
+        type: 'success',
+        title: 'AI Response Approved',
+        message: 'AI response has been approved and sent to patient',
+        caseId,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Approval Failed',
+        message: 'Failed to approve AI response. Please try again.',
+        caseId,
+      });
     }
-
-    // Add success notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'success',
-      title: 'AI Response Approved',
-      message: 'AI response has been approved and sent to patient',
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
   };
 
   const handleRejectAIResponse = async (caseId: string, responseId: string, reason: string) => {
-    dispatch(dashboardActions.rejectAIResponse(caseId, responseId));
+    try {
+      await rejectAIResponse(responseId, reason);
+      dispatch(dashboardActions.rejectAIResponse(caseId, responseId));
 
-    // Add info notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'info',
-      title: 'AI Response Rejected',
-      message: `Reason: ${reason}`,
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
+      addNotification({
+        type: 'warning',
+        title: 'AI Response Rejected',
+        message: `Reason: ${reason}`,
+        caseId,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Rejection Failed',
+        message: 'Failed to reject AI response. Please try again.',
+        caseId,
+      });
+    }
   };
 
   const handleEditAIResponse = async (caseId: string, responseId: string, newContent: string) => {
     // In a real app, this would update the AI response content
     console.log('Editing AI response:', { caseId, responseId, newContent });
+    
+    addNotification({
+      type: 'info',
+      title: 'AI Response Modified',
+      message: 'AI response has been edited and is ready for review',
+      caseId,
+    });
   };
 
   const handleRequestAISuggestion = async (caseId: string) => {
-    // Mock AI response generation
-    const mockAIResponse = {
-      id: `ai-${Date.now()}`,
-      caseId,
-      content: "Based on the patient's inquiry, I recommend scheduling a follow-up appointment within 2 weeks. Please ensure to review their recent lab results and adjust medication dosage if necessary.",
-      confidence: 'high' as const,
-      confidenceScore: 92,
-      clinicalReasoning: "Patient shows consistent symptoms that align with their medical history. Recent vitals are stable, and current medication appears effective with minor adjustment needed.",
-      suggestedActions: [
-        "Schedule follow-up appointment",
-        "Review recent lab results",
-        "Consider medication dosage adjustment"
-      ],
-      riskAssessment: {
-        level: 'low' as const,
-        factors: ["Stable vital signs", "Consistent medication compliance"]
-      },
-      generatedAt: new Date(),
-      isApproved: false,
-    };
+    try {
+      const case_ = state.cases.find(c => c.id === caseId);
+      if (!case_) return;
 
-    dispatch(dashboardActions.addAIResponse(caseId, mockAIResponse));
+      const context = case_.messages.map(m => m.content).join(' ');
+      const aiResponse = await generateAIResponse(caseId, context);
+      dispatch(dashboardActions.addAIResponse(caseId, aiResponse));
 
-    // Add info notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'info',
-      title: 'AI Suggestion Generated',
-      message: 'New AI response ready for review',
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
+      // Show different notifications based on confidence level
+      const notificationType = aiResponse.confidence === 'high' ? 'success' : 
+                              aiResponse.confidence === 'medium' ? 'info' : 'warning';
+
+      addNotification({
+        type: notificationType,
+        title: `AI Suggestion Generated (${aiResponse.confidence} confidence)`,
+        message: `AI response ready for review - ${Math.round(aiResponse.confidenceScore)}% confidence`,
+        caseId,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'AI Generation Failed',
+        message: 'Failed to generate AI response. Please try again.',
+        caseId,
+      });
+    }
   };
 
   const handleBatchAction = async (caseId: string, action: string, responseIds: string[], reason?: string) => {
     if (!state.currentUser) return;
 
-    if (action === 'approve') {
-      responseIds.forEach(responseId => {
-        dispatch(dashboardActions.approveAIResponse(caseId, responseId, state.currentUser!.id));
+    try {
+      if (action === 'approve') {
+        for (const responseId of responseIds) {
+          await approveAIResponse(responseId);
+          dispatch(dashboardActions.approveAIResponse(caseId, responseId, state.currentUser.id));
+        }
+      } else if (action === 'reject') {
+        for (const responseId of responseIds) {
+          await rejectAIResponse(responseId, reason || 'Batch rejection');
+          dispatch(dashboardActions.rejectAIResponse(caseId, responseId));
+        }
+      }
+
+      addNotification({
+        type: 'success',
+        title: 'Batch Action Completed',
+        message: `${action} ${responseIds.length} AI response${responseIds.length !== 1 ? 's' : ''}`,
+        caseId,
       });
-    } else if (action === 'reject') {
-      responseIds.forEach(responseId => {
-        dispatch(dashboardActions.rejectAIResponse(caseId, responseId));
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Batch Action Failed',
+        message: `Failed to ${action} responses. Please try again.`,
+        caseId,
       });
     }
-
-    // Add notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'success',
-      title: 'Batch Action Completed',
-      message: `${action} ${responseIds.length} AI response${responseIds.length !== 1 ? 's' : ''}`,
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
   };
 
   const handleUpdateCaseStatus = async (caseId: string, status: Case['status']) => {
-    dispatch(dashboardActions.updateCaseStatus(caseId, status));
-
-    // Add notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'info',
-      title: 'Case Status Updated',
-      message: `Case status changed to ${status}`,
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
+    try {
+      await dataService.updateCaseStatus(caseId, status);
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Status Update Failed',
+        message: 'Failed to update case status. Please try again.',
+        caseId,
+      });
+    }
   };
 
   const handleEscalateCase = async (caseId: string, reason: string) => {
-    dispatch(dashboardActions.updateCaseStatus(caseId, 'escalated'));
+    try {
+      await dataService.updateCaseStatus(caseId, 'escalated', reason);
 
-    // Add warning notification
-    dispatch(dashboardActions.addNotification({
-      id: `notif-${Date.now()}`,
-      type: 'warning',
-      title: 'Case Escalated',
-      message: `Reason: ${reason}`,
-      timestamp: new Date(),
-      isRead: false,
-      caseId,
-    }));
+      // Add additional escalation notification
+      addNotification({
+        type: 'warning',
+        title: 'Case Escalated',
+        message: `Case escalated to clinical team. Reason: ${reason}`,
+        caseId,
+      });
+    } catch (error) {
+      addNotification({
+        type: 'error',
+        title: 'Escalation Failed',
+        message: 'Failed to escalate case. Please try again.',
+        caseId,
+      });
+    }
   };
 
   if (!state.currentUser) {
@@ -208,6 +262,7 @@ const MediReplyDashboardContainer: React.FC = () => {
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
           <p className="text-gray-600">Loading MediReply Dashboard...</p>
+          <p className="text-sm text-gray-500 mt-2">Enhanced with realistic healthcare scenarios</p>
         </div>
       </div>
     );
@@ -232,7 +287,7 @@ const MediReplyDashboardContainer: React.FC = () => {
   );
 };
 
-// Main component with context provider
+// Main component with context provider and enhanced data integration
 const MediReplyApp: React.FC = () => {
   return (
     <DashboardProvider
