@@ -112,7 +112,41 @@ export const mockCases: Case[] = [
     createdAt: new Date(Date.now() - 2 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 1 * 60 * 60 * 1000),
     messages: createMessages('Sarah Johnson', 'case-1'),
-    aiResponses: [],
+    aiResponses: [
+      {
+        id: 'ai-1-1',
+        caseId: 'case-1',
+        content: `I understand you're experiencing chest pain and shortness of breath. These symptoms require immediate medical attention.
+
+Please go to your nearest emergency room immediately or call 911. Do not drive yourself - have someone drive you or call an ambulance.
+
+While waiting for emergency care:
+- Try to stay calm and rest in a comfortable position
+- Do not take any medications unless prescribed by your doctor
+- Have someone stay with you if possible
+
+Your safety is our top priority. Please seek emergency care right away and follow up with us once you've been evaluated.`,
+        confidence: 'high' as const,
+        confidenceScore: 98,
+        clinicalReasoning: 'High confidence emergency response. Chest pain and shortness of breath are red flag symptoms requiring immediate emergency evaluation to rule out cardiac events, pulmonary embolism, or other life-threatening conditions. Standard protocol is immediate emergency referral.',
+        suggestedActions: [
+          'Immediate emergency room referral',
+          'Document emergency referral in patient chart',
+          'Schedule follow-up after emergency evaluation'
+        ],
+        riskAssessment: {
+          level: 'high' as const,
+          factors: [
+            'Acute chest pain symptoms',
+            'Shortness of breath', 
+            'Potential cardiac or pulmonary emergency',
+            'Requires immediate medical evaluation'
+          ]
+        },
+        generatedAt: new Date(Date.now() - 30 * 60 * 1000), // 30 minutes ago
+        isApproved: false
+      }
+    ],
     estimatedResponseTime: 5,
     satisfactionScore: undefined
   },
@@ -147,7 +181,73 @@ export const mockCases: Case[] = [
     createdAt: new Date(Date.now() - 8 * 60 * 60 * 1000),
     updatedAt: new Date(Date.now() - 4 * 60 * 60 * 1000),
     messages: createMessages('Emma Williams', 'case-3'),
-    aiResponses: [],
+    aiResponses: [
+      {
+        id: 'ai-3-1',
+        caseId: 'case-3',
+        content: `Thank you for reaching out about scheduling your annual physical exam. I'd be happy to help you set up this important appointment.
+
+Based on your insurance plan and our current availability, I can offer you the following appointment times:
+- Monday, March 21st at 9:30 AM with Dr. Martinez
+- Wednesday, March 23rd at 2:15 PM with Dr. Chen  
+- Friday, March 25th at 10:45 AM with Dr. Martinez
+
+Each appointment will include:
+- Complete physical examination
+- Routine lab work (blood panel, cholesterol screening)
+- Wellness planning discussion
+- Review of your medical history and medications
+
+Would any of these times work for your schedule? Please let me know your preference, and I'll send you a confirmation with preparation instructions.`,
+        confidence: 'high' as const,
+        confidenceScore: 96,
+        clinicalReasoning: 'High confidence response for routine appointment scheduling. Patient requesting standard annual physical with wellness discussion. Provided multiple specific appointment options with provider names and comprehensive service description.',
+        suggestedActions: [
+          'Check provider availability for proposed times',
+          'Verify insurance coverage for annual physical',
+          'Send appointment confirmation and prep instructions'
+        ],
+        riskAssessment: {
+          level: 'low' as const,
+          factors: ['Routine preventive care appointment', 'No urgent health concerns']
+        },
+        generatedAt: new Date(Date.now() - 45 * 60 * 1000), // 45 minutes ago
+        isApproved: false
+      },
+      {
+        id: 'ai-3-2',
+        caseId: 'case-3',
+        content: `I see you're interested in scheduling your annual wellness visit. Let me help you with that right away.
+
+For your annual physical, we recommend scheduling with one of our primary care providers. Here are some available options:
+
+**This Week:**
+- Dr. Rodriguez: Thursday at 3:00 PM
+- Dr. Kim: Friday at 11:15 AM
+
+**Next Week:**  
+- Dr. Martinez: Monday at 8:45 AM
+- Dr. Chen: Wednesday at 1:30 PM
+
+Your annual exam will cover preventive screenings appropriate for your age and health history. We'll also have time to discuss any health goals or concerns you might have.
+
+Which appointment would work best for you?`,
+        confidence: 'medium' as const,
+        confidenceScore: 87,
+        clinicalReasoning: 'Medium confidence alternative response for appointment scheduling. Different provider options and time slots offered. Slightly less detailed than first option but still comprehensive.',
+        suggestedActions: [
+          'Confirm provider availability',
+          'Schedule chosen appointment slot', 
+          'Send wellness visit preparation materials'
+        ],
+        riskAssessment: {
+          level: 'low' as const,
+          factors: ['Routine scheduling request', 'No medical urgency']
+        },
+        generatedAt: new Date(Date.now() - 20 * 60 * 1000), // 20 minutes ago
+        isApproved: false
+      }
+    ],
     estimatedResponseTime: 45,
     satisfactionScore: undefined
   },
