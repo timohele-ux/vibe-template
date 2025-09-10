@@ -287,6 +287,85 @@ Which appointment would work best for you?`,
     estimatedResponseTime: 60,
     actualResponseTime: 45,
     satisfactionScore: 4.5
+  },
+  // Historical cases for previous patient interactions
+  {
+    id: 'case-hist-1',
+    patientId: 'p1', // Sarah Johnson
+    patient: mockPatients[0],
+    subject: 'Follow-up on chest X-ray results',
+    summary: 'Patient inquired about recent chest X-ray findings and next steps',
+    priority: 'urgent',
+    status: 'resolved',
+    category: 'Follow-up',
+    tags: ['chest-xray', 'follow-up', 'results'],
+    assignedTo: 'dr-martinez',
+    createdAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000), // 2 weeks ago
+    updatedAt: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+    messages: [
+      {
+        id: 'msg-hist-1-1',
+        content: 'Hi, I got a call about my chest X-ray results. The nurse said the doctor wants to discuss them with me. Should I be worried?',
+        timestamp: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000),
+        senderType: 'patient',
+        senderId: 'p1',
+        senderName: 'Sarah Johnson',
+        isRead: true,
+        sentiment: 'negative'
+      },
+      {
+        id: 'msg-hist-1-2',
+        content: 'Thank you for reaching out, Sarah. I understand your concern about the X-ray results. The findings show some minor changes that we want to monitor, but nothing immediately alarming. Dr. Martinez would like to schedule a follow-up appointment to discuss the results in detail and create a monitoring plan. Would you be available this week for an appointment?',
+        timestamp: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000 + 30 * 60 * 1000),
+        senderType: 'staff',
+        senderId: 'dr-martinez',
+        senderName: 'Dr. Martinez',
+        isRead: true
+      }
+    ],
+    aiResponses: [],
+    estimatedResponseTime: 15,
+    actualResponseTime: 12,
+    satisfactionScore: 4.8
+  },
+  {
+    id: 'case-hist-2',
+    patientId: 'p3', // Emma Williams  
+    patient: mockPatients[2],
+    subject: 'Flu vaccine appointment scheduling',
+    summary: 'Patient requested flu vaccination appointment for fall season',
+    priority: 'routine',
+    status: 'resolved',
+    category: 'Vaccination',
+    tags: ['flu-vaccine', 'appointment', 'prevention'],
+    assignedTo: 'nurse-roberts',
+    createdAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000), // 45 days ago
+    updatedAt: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+    messages: [
+      {
+        id: 'msg-hist-2-1',
+        content: 'Hello! I would like to schedule my annual flu vaccine. What times do you have available?',
+        timestamp: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000),
+        senderType: 'patient',
+        senderId: 'p3',
+        senderName: 'Emma Williams',
+        isRead: true,
+        sentiment: 'positive'
+      },
+      {
+        id: 'msg-hist-2-2',
+        content: 'Great to hear you\'re staying up to date with your vaccinations! We have several appointment slots available next week. I can offer you Tuesday at 2:00 PM or Friday at 10:30 AM. The flu vaccine is quick - just about 15 minutes total. Which time works better for you?',
+        timestamp: new Date(Date.now() - 45 * 24 * 60 * 60 * 1000 + 45 * 60 * 1000),
+        senderType: 'staff',
+        senderId: 'nurse-roberts',
+        senderName: 'Nurse Roberts',
+        isRead: true
+      }
+    ],
+    aiResponses: [],
+    estimatedResponseTime: 30,
+    actualResponseTime: 25,
+    satisfactionScore: 5.0
   }
 ];
 

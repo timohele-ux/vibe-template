@@ -8,3 +8,6 @@ export { default as MessageComposer } from './MessageComposer';
 export { default as AIResponseDraft } from './AIResponseDraft';
 export { default as BatchModeToggle } from './BatchModeToggle';
 export { default as BatchActions } from './BatchActions';
+export { default as PatientDemographics } from './PatientDemographics';
+export { default as MedicalHistory } from './MedicalHistory';
+export { default as ChatHistoryTab } from './ChatHistoryTab';

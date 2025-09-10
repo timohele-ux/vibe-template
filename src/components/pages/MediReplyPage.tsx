@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { TopNavigation, SupportRequestsQueue, ActiveCasePanel } from '../organisms';
+import { TopNavigation, SupportRequestsQueue, ActiveCasePanel, PatientContextPanel } from '../organisms';
 import { mockCases, mockMetrics, mockCurrentUser } from '../../mockData';
 import type { Case, AIResponse } from '../../types';
 
@@ -171,19 +171,12 @@ const MediReplyPage: React.FC = () => {
           />
         </div>
 
-        {/* Right Panel - Patient Context (Placeholder) */}
+        {/* Right Panel - Patient Context */}
         <div className="w-80 flex-shrink-0 bg-white">
-          <div className="h-full flex items-center justify-center">
-            <div className="text-center p-8">
-              <div className="bg-purple-50 border-2 border-dashed border-purple-200 rounded-lg p-6">
-                <h3 className="font-semibold text-purple-900 mb-2">Patient Context</h3>
-                <p className="text-purple-700 text-sm mb-4">
-                  Patient information, medical history, and context
-                </p>
-                <p className="text-purple-600 text-xs">Coming in Phase 5</p>
-              </div>
-            </div>
-          </div>
+          <PatientContextPanel
+            patient={selectedCase?.patient || null}
+            previousCases={cases.filter(c => c.patientId === selectedCase?.patientId && c.id !== selectedCase?.id)}
+          />
         </div>
       </div>
     </div>
