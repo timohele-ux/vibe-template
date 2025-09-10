@@ -1,8 +1,8 @@
 
-import { DesignSystem } from './components/pages';
+import { MediReplyPage } from './components/pages';
 
 function App() {
-  return <DesignSystem />;
+  return <MediReplyPage />;
 }
 
 export default App;
