@@ -403,3 +403,70 @@ export const mockCurrentUser: User = {
     autoAssign: false
   }
 };
+
+export const mockUsers: User[] = [
+  mockCurrentUser,
+  {
+    id: 'user-2',
+    firstName: 'Dr. Michael',
+    lastName: 'Rodriguez',
+    email: 'dr.rodriguez@medireply.com',
+    role: 'clinician',
+    department: 'Cardiology',
+    isOnline: true,
+    lastActive: new Date(Date.now() - 300000), // 5 minutes ago
+    permissions: {
+      canApproveAI: true,
+      canEscalate: true,
+      canViewAllCases: true,
+      canModifySettings: false
+    },
+    preferences: {
+      notifications: true,
+      soundAlerts: false,
+      autoAssign: true
+    }
+  },
+  {
+    id: 'user-3',
+    firstName: 'Lisa',
+    lastName: 'Chen',
+    email: 'l.chen@medireply.com',
+    role: 'support',
+    department: 'Patient Support',
+    isOnline: false,
+    lastActive: new Date(Date.now() - 3600000), // 1 hour ago
+    permissions: {
+      canApproveAI: false,
+      canEscalate: true,
+      canViewAllCases: false,
+      canModifySettings: false
+    },
+    preferences: {
+      notifications: true,
+      soundAlerts: true,
+      autoAssign: true
+    }
+  },
+  {
+    id: 'user-4',
+    firstName: 'Admin',
+    lastName: 'User',
+    email: 'admin@medireply.com',
+    role: 'admin',
+    department: 'IT',
+    isOnline: true,
+    lastActive: new Date(Date.now() - 60000), // 1 minute ago
+    permissions: {
+      canApproveAI: true,
+      canEscalate: true,
+      canViewAllCases: true,
+      canModifySettings: true
+    },
+    preferences: {
+      notifications: false,
+      soundAlerts: false,
+      autoAssign: false
+    }
+  }
+];
