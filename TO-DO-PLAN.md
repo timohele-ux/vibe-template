@@ -191,7 +191,6 @@
 
 ### Design Requirements
 - ✅ Clean, clinical SaaS aesthetic
-- ✅ ELO brand color integration
 - ✅ High legibility for medical professionals
 - ✅ Consistent atomic design pattern usage
 - ✅ Accessible WCAG 2.1 AA compliance
@@ -257,9 +256,3 @@ src/lib/
 - **Radix UI**: Use for all interactive elements (dialogs, dropdowns, etc.)
 - **Performance**: Virtualization for large case lists
 - **Accessibility**: Medical professionals often work in high-stress environments
-
-### Brand Guidelines
-- **ELO Colors**: Yellow (#FFDD00), Purple (#6b66b4), Blue (#0077C8)
-- **Typography**: Inter font family with medical-appropriate sizing
-- **Layout**: Clean, spacious design with clear information hierarchy
-- **Interactions**: Professional, confident, and efficient user experience
