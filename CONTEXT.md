@@ -46,7 +46,7 @@
 
 
 ## Right Panel — Patient Context
-- Visual: Tabbed panel (Patient Info, History, Metrics). Cards for demographics, conditions, medications.
+- Visual: Tabbed panel (Patient Info, Chat History). Cards for demographics, conditions, medications.
 - Function: Provide structured patient context to support safe, tailored responses.
 
 ## Interaction Patterns
