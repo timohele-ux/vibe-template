@@ -42,20 +42,20 @@
 ## Phase 3: Left Panel - Support Queue (Days 5-7)
 
 ### 3.1 Queue Components
-- [ ] Create `SupportRequestsQueue.tsx` organism:
+- [x] Create `SupportRequestsQueue.tsx` organism:
   - Search bar with medical context
   - Queue/Archive tabs
   - Sortable case list with virtualization
   - Real-time updates indicator
 
 ### 3.2 Queue List Items
-- [ ] Create `CaseListItem.tsx` molecule:
+- [x] Create `CaseListItem.tsx` molecule:
   - Patient name and summary
   - Priority and status tags  
   - Timestamp display
   - Unread indicators
-- [ ] Create `QueueFilters.tsx` - filter by priority, department, time
-- [ ] Create `QueueStats.tsx` - pending count, response metrics
+- [x] Create `QueueFilters.tsx` - filter by priority, department, time
+- [x] Create `QueueStats.tsx` - pending count, response metrics
 
 ---
 
