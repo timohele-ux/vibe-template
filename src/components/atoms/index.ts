@@ -20,3 +20,8 @@ export { default as Tooltip } from './Tooltip';
 
 // Layout components
 export { default as Tabs } from './Tabs';
+
+// Healthcare-specific components
+export { default as ConfidenceScore } from './ConfidenceScore';
+export { default as PriorityTag } from './PriorityTag';
+export { default as StatusIndicator } from './StatusIndicator';

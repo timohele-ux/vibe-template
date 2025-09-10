@@ -10,7 +10,7 @@
 ## Phase 1: Foundation & Types (Days 1-2)
 
 ### 1.1 Type Definitions
-- [ ] Create `src/types/index.ts` with core interfaces:
+- [x] Create `src/types/index.ts` with core interfaces:
   - `Patient` - demographics, medical info
   - `Message` - content, timestamp, sender type
   - `Case` - patient, messages, priority, status
@@ -18,12 +18,12 @@
   - `User` - staff member details and permissions
 
 ### 1.2 Enhanced Atomic Components
-- [ ] Update `Badge.tsx` - add medical priority variants (urgent, routine, critical)
-- [ ] Update `Avatar.tsx` - add patient/staff indicators
-- [ ] Update `Button.tsx` - add healthcare actions (approve, escalate, reject)
-- [ ] Create `ConfidenceScore.tsx` - visual AI confidence indicator
-- [ ] Create `PriorityTag.tsx` - medical priority display
-- [ ] Create `StatusIndicator.tsx` - case status badges
+- [x] Update `Badge.tsx` - add medical priority variants (urgent, routine, critical)
+- [x] Update `Avatar.tsx` - add patient/staff indicators
+- [x] Update `Button.tsx` - add healthcare actions (approve, escalate, reject)
+- [x] Create `ConfidenceScore.tsx` - visual AI confidence indicator
+- [x] Create `PriorityTag.tsx` - medical priority display
+- [x] Create `StatusIndicator.tsx` - case status badges
 
 ---
 

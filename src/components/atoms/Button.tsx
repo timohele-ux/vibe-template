@@ -2,7 +2,7 @@ import React from 'react';
 import { Slot } from '@radix-ui/react-slot';
 
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
+  variant?: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger' | 'approve' | 'escalate' | 'reject';
   size?: 'xs' | 'sm' | 'md' | 'lg';
   asChild?: boolean;
   fullWidth?: boolean;
@@ -27,7 +27,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
       secondary: 'bg-gray-600 text-white hover:bg-gray-700 focus:ring-gray-500 active:bg-gray-800',
       outline: 'border-2 border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500 active:bg-gray-100',
       ghost: 'text-gray-700 hover:bg-gray-100 focus:ring-gray-500 active:bg-gray-200',
-      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800'
+      danger: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800',
+      approve: 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500 active:bg-green-800',
+      escalate: 'bg-yellow-600 text-white hover:bg-yellow-700 focus:ring-yellow-500 active:bg-yellow-800',
+      reject: 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500 active:bg-red-800'
     };
     
     const sizeClasses = {
