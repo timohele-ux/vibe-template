@@ -27,9 +27,31 @@ Healthcare organizations face rising digital inquiries, staff burnout, and incon
 ---
 
 ## Layout structure
-- Use a three-column dashboard layout (left = message inbox queue, center = message and example of AI-sugdrafted answer and conversation, right = patient context).
+- Use a top navigation bar with three-column dashboard layout (left = message inbox queue, center = message and example of AI-sugdrafted answer and conversation, right = patient context).
 - Visual style = clean, clinical SaaS aesthetic: neutral palette, accent colors for status/tags, high legibility.
 - Outputs must map to real, reusable components
+
+## Top Navigation Bar
+- Visual: Logo, nav links (Dashboard, Knowledge Gaps, Metrics, Live), utility controls (notifications, help, profile).
+- Function: Global navigation + quick access to analytics/settings.
+
+## Left Panel — Support Requests Queue
+- Visual: Search bar, tabs (Queue/Archive), list of patient requests with name, summary, tags, timestamps.
+- Function: Triage and manage patient requests; see workload at a glance.
+
+
+## Center Panel — Active Case & AI Interaction
+- Visual: Case header, Batch Mode toggle, conversation thread (patient messages + AI Assistant drafts with confidence score).
+- Function: Main workspace for approving/editing AI responses or writing replies.
+
+
+## Right Panel — Patient Context
+- Visual: Tabbed panel (Patient Info, History, Metrics). Cards for demographics, conditions, medications.
+- Function: Provide structured patient context to support safe, tailored responses.
+
+## Interaction Patterns
+- Visual: Tags for severity, categories, sentiment.
+- Function: AI drafts responses, human approves/edits, batch handling possible.
 
 ---
 
