@@ -6,15 +6,19 @@ import {
   AIResponseDraft, 
   BatchModeToggle, 
   BatchActions,
-  PatientMessageCard
+  PatientMessageCard,
+  ClinicalEscalationModal
 } from '../molecules';
 import { getResourcesByContext } from '../../mockData';
 import { useConversationState } from '../../lib/ConversationStateContext';
 import { useWorkflowState } from '../../lib/useWorkflowState';
+import { useClinicalIntentDetection } from '../../lib/useClinicalIntentDetection';
 import type { Case, User, Message, AIResponse, EditReason, SuggestedResource } from '../../types';
+import type { EscalationData } from '../molecules';
 
 interface ActiveCasePanelProps {
   activeCase: Case | null;
+  currentUser: User;
   onSendMessage: (caseId: string, content: string, isDraft?: boolean) => void;
   onApproveAIResponse: (caseId: string, responseId: string, modifications?: string[]) => void;
   onRejectAIResponse: (caseId: string, responseId: string, reason: string) => void;
@@ -22,13 +26,14 @@ interface ActiveCasePanelProps {
   onRequestAISuggestion: (caseId: string) => void;
   onBatchAction: (caseId: string, action: string, responseIds: string[], reason?: string) => void;
   onUpdateCaseStatus: (caseId: string, status: Case['status']) => void;
-  onEscalateCase: (caseId: string, reason: string) => void;
+  onEscalateCase: (caseId: string, escalationData: EscalationData) => void;
   isLoading?: boolean;
   className?: string;
 }
 
 const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
   activeCase,
+  currentUser,
   onSendMessage,
   onApproveAIResponse,
   onRejectAIResponse,
@@ -45,12 +50,14 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
   const [aiSuggestion, setAISuggestion] = useState<AIResponse | null>(null);
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showEscalationModal, setShowEscalationModal] = useState(false);
-  const [escalationReason, setEscalationReason] = useState('');
   const [showDetails, setShowDetails] = useState(false);
 
   // Phase 6: Workflow State Management Integration
   const { state, actions } = useConversationState();
   const workflowState = useWorkflowState();
+  
+  // Phase 7: Clinical Safety & Escalation Integration
+  const clinicalDetection = useClinicalIntentDetection();
 
   // Initialize conversation state when case changes
   useEffect(() => {
@@ -67,35 +74,32 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
       // Generate suggested resources based on context
       const resources = getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions);
       actions.setSuggestedResources(resources);
+      
+      // Phase 7: Analyze case content for clinical intent
+      const allMessages = activeCase.messages || [];
+      if (allMessages.length > 0) {
+        const combinedContent = allMessages.map(msg => msg.content).join(' ');
+        clinicalDetection.analyzeContent(combinedContent);
+      }
     }
-  }, [activeCase, actions]);
+  }, [activeCase, actions, clinicalDetection]);
 
-  // Enhanced edit handler with audit trail
-  const handleEnhancedEdit = async (responseId: string, content: string, editReason: EditReason, customReason?: string) => {
+    // Enhanced edit handler with audit trail
+  const handleEnhancedEdit = (responseId: string, content: string, editReason: EditReason, customReason?: string) => {
     if (!activeCase) return;
 
     // Use workflow state management
     const validation = workflowState.validateTransition('editing', editReason, customReason);
     
     if (!validation.canTransition) {
-      console.warn('Edit transition not allowed:', validation.blockingFactors);
+      console.error('Edit validation failed:', validation.blockingFactors);
       return;
     }
 
-    // Add to audit trail before making the edit
-    if (state.currentUser) {
-      actions.addEditRecord({
-        userId: state.currentUser.id,
-        reason: editReason,
-        customReason,
-        originalContent: activeCase.aiResponses.find(r => r.id === responseId)?.content || '',
-        modifiedContent: content,
-        conversationId: activeCase.id
-      });
-    }
-
-    // Execute the edit
+    // Perform the edit
     onEditAIResponse(activeCase.id, responseId, content, editReason, customReason);
+    
+    // The edit record is automatically added through the context
   };
 
   // Reset batch mode when case changes
@@ -111,11 +115,11 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
     }
   };
 
-  const handleRequestAISuggestion = async () => {
+  const handleRequestAISuggestion = () => {
     if (activeCase) {
       setIsGeneratingAI(true);
       try {
-        await onRequestAISuggestion(activeCase.id);
+        onRequestAISuggestion(activeCase.id);
         // In a real implementation, this would come from the parent component
         // For now, we'll simulate an AI response
         setTimeout(() => {
@@ -166,11 +170,10 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
     }
   };
 
-  const handleEscalateCase = () => {
-    if (activeCase && escalationReason.trim()) {
-      onEscalateCase(activeCase.id, escalationReason.trim());
+  const handleEscalateCase = (escalationData: EscalationData) => {
+    if (activeCase) {
+      onEscalateCase(activeCase.id, escalationData);
       setShowEscalationModal(false);
-      setEscalationReason('');
     }
   };
 
@@ -243,6 +246,43 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                 Escalated
               </Badge>
             )}
+            
+            {/* Phase 7: Clinical Safety Indicators */}
+            {(() => {
+              const safetyFlags = clinicalDetection.getCurrentSafetyFlags(currentUser.role);
+              const analysis = clinicalDetection.currentCaseAnalysis;
+              
+              return (
+                <>
+                  {analysis?.isClinical && (
+                    <Badge variant="info" className="text-xs">
+                      Clinical Content
+                    </Badge>
+                  )}
+                  {analysis?.riskLevel === 'high' && (
+                    <Badge variant="warning" className="text-xs">
+                      High Risk
+                    </Badge>
+                  )}
+                  {analysis?.riskLevel === 'critical' && (
+                    <Badge variant="error" className="text-xs">
+                      Critical Risk
+                    </Badge>
+                  )}
+                  {safetyFlags?.blockSending && (
+                    <Badge variant="error" className="text-xs">
+                      Blocked
+                    </Badge>
+                  )}
+                  {safetyFlags?.requiresSupervisorApproval && (
+                    <Badge variant="warning" className="text-xs">
+                      Supervisor Required
+                    </Badge>
+                  )}
+                </>
+              );
+            })()}
+            
             {state.editHistory.length > 0 && (
               <Badge variant="default" className="text-xs">
                 {state.editHistory.length} Edit{state.editHistory.length !== 1 ? 's' : ''}
@@ -536,46 +576,14 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
         </div>
       </div>
 
-      {/* Escalation Modal */}
-      {showEscalationModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <Heading3 className="text-gray-900 mb-4">
-              Escalate Case
-            </Heading3>
-            <BodyText className="text-gray-600 mb-4">
-              Escalate this case to a supervisor or specialist. Please provide a reason for escalation.
-            </BodyText>
-            <textarea
-              value={escalationReason}
-              onChange={(e) => setEscalationReason(e.target.value)}
-              placeholder="Enter escalation reason..."
-              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-yellow-500 focus:border-transparent"
-              rows={4}
-            />
-            <div className="flex justify-end space-x-3 mt-4">
-              <Button
-                variant="secondary"
-                size="sm"
-                onClick={() => {
-                  setShowEscalationModal(false);
-                  setEscalationReason('');
-                }}
-              >
-                Cancel
-              </Button>
-              <Button
-                variant="danger"
-                size="sm"
-                onClick={handleEscalateCase}
-                disabled={!escalationReason.trim()}
-              >
-                Escalate Case
-              </Button>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Phase 7: Clinical Escalation Modal */}
+      <ClinicalEscalationModal
+        isOpen={showEscalationModal}
+        onClose={() => setShowEscalationModal(false)}
+        onEscalate={handleEscalateCase}
+        caseId={activeCase?.id || ''}
+        userRole={currentUser.role}
+      />
     </div>
   );
 };
