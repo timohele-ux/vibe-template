@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Badge, PriorityTag, StatusIndicator, Avatar, Heading2, Heading3, BodyText, SmallText } from '../atoms';
+import { Button, Badge, PriorityTag, StatusIndicator, Avatar, Heading2, Heading3, BodyText, SmallText, Caption, Tabs, Toggle } from '../atoms';
 import { 
   ConversationThread, 
   MessageComposer, 
@@ -42,6 +42,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
   const [isGeneratingAI, setIsGeneratingAI] = useState(false);
   const [showEscalationModal, setShowEscalationModal] = useState(false);
   const [escalationReason, setEscalationReason] = useState('');
+  const [showDetails, setShowDetails] = useState(false);
 
   // Reset batch mode when case changes
   useEffect(() => {
@@ -152,64 +153,122 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
 
   return (
     <div className={`flex flex-col h-full bg-white ${className}`}>
-      {/* Case Header */}
+      {/* Simplified Case Header */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 p-4">
-        <div className="flex items-start justify-between">
-          <div className="flex items-start space-x-3">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center space-x-3">
             <Avatar
               fallback={`${activeCase.patient.firstName[0]}${activeCase.patient.lastName[0]}`}
               size="md"
               userType="patient"
             />
             <div>
-              <div className="flex items-center space-x-2">
-                <Heading2 className="text-gray-900">
-                  {activeCase.patient.firstName} {activeCase.patient.lastName}
-                </Heading2>
-                <StatusIndicator status={activeCase.status} size="sm" />
-              </div>
-              <BodyText className="text-gray-600 mt-1">{activeCase.subject}</BodyText>
-              <div className="flex items-center space-x-4 mt-2">
-                <PriorityTag priority={activeCase.priority} size="sm" />
-                <SmallText className="text-gray-500">
-                  Created {formatTimeAgo(activeCase.createdAt)}
-                </SmallText>
-                <SmallText className="text-gray-500">
-                  Updated {formatTimeAgo(activeCase.updatedAt)}
-                </SmallText>
-              </div>
+              <Heading2 className="text-gray-900">
+                {activeCase.patient.firstName} {activeCase.patient.lastName}
+              </Heading2>
+              <Caption variant="muted">
+                Last message {formatTimeAgo(activeCase.updatedAt)}
+              </Caption>
             </div>
           </div>
 
-          <div className="flex items-center space-x-3">
-            {/* Primary Actions */}
-            <div className="flex items-center space-x-2">
-              <Button
-                variant="outline"
-                size="sm"
-                onClick={() => setShowEscalationModal(true)}
-                disabled={isLoading}
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-                </svg>
-                Escalate
-              </Button>
-              
-              <Button
-                variant="primary"
-                size="sm"
-                onClick={() => onUpdateCaseStatus(activeCase.id, 'resolved')}
-                disabled={isLoading || activeCase.status === 'resolved'}
-              >
-                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Resolve
-              </Button>
-            </div>
+          <div className="flex items-center space-x-2">
+            <Toggle
+              pressed={showDetails}
+              onPressedChange={setShowDetails}
+              size="sm"
+            />
+            <SmallText variant="muted">Details</SmallText>
           </div>
         </div>
+
+        {/* Collapsible Details Section */}
+        {showDetails && (
+          <div className="mt-4 pt-4 border-t border-gray-100">
+            <Tabs defaultValue="case-info">
+              <Tabs.List>
+                <Tabs.Trigger value="case-info">Case Info</Tabs.Trigger>
+                <Tabs.Trigger value="patient-info">Patient Info</Tabs.Trigger>
+                <Tabs.Trigger value="actions">Actions</Tabs.Trigger>
+              </Tabs.List>
+              
+              <Tabs.Content value="case-info">
+                <div className="space-y-3">
+                  <div className="flex items-center space-x-4">
+                    <StatusIndicator status={activeCase.status} size="sm" />
+                    <PriorityTag priority={activeCase.priority} size="sm" />
+                  </div>
+                  <BodyText className="text-gray-600">{activeCase.subject}</BodyText>
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <SmallText weight="medium" className="text-gray-700">Created</SmallText>
+                      <Caption variant="muted">{formatTimeAgo(activeCase.createdAt)}</Caption>
+                    </div>
+                    <div>
+                      <SmallText weight="medium" className="text-gray-700">Category</SmallText>
+                      <Caption variant="muted">{activeCase.category}</Caption>
+                    </div>
+                  </div>
+                </div>
+              </Tabs.Content>
+              
+              <Tabs.Content value="patient-info">
+                <div className="space-y-3">
+                  <div className="grid grid-cols-2 gap-4">
+                    <div>
+                      <SmallText weight="medium" className="text-gray-700">Email</SmallText>
+                      <Caption variant="muted">{activeCase.patient.email || 'Not provided'}</Caption>
+                    </div>
+                    <div>
+                      <SmallText weight="medium" className="text-gray-700">Phone</SmallText>
+                      <Caption variant="muted">{activeCase.patient.phone || 'Not provided'}</Caption>
+                    </div>
+                  </div>
+                  {activeCase.patient.riskFlags.length > 0 && (
+                    <div>
+                      <SmallText weight="medium" className="text-gray-700 mb-1">Risk Flags</SmallText>
+                      <div className="flex flex-wrap gap-1">
+                        {activeCase.patient.riskFlags.map((flag, index) => (
+                          <Badge key={index} variant="warning" size="sm">
+                            {flag}
+                          </Badge>
+                        ))}
+                      </div>
+                    </div>
+                  )}
+                </div>
+              </Tabs.Content>
+              
+              <Tabs.Content value="actions">
+                <div className="flex items-center space-x-2">
+                  <Button
+                    variant="outline"
+                    size="sm"
+                    onClick={() => setShowEscalationModal(true)}
+                    disabled={isLoading}
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                    </svg>
+                    Escalate
+                  </Button>
+                  
+                  <Button
+                    variant="primary"
+                    size="sm"
+                    onClick={() => onUpdateCaseStatus(activeCase.id, 'resolved')}
+                    disabled={isLoading || activeCase.status === 'resolved'}
+                  >
+                    <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                    </svg>
+                    Resolve
+                  </Button>
+                </div>
+              </Tabs.Content>
+            </Tabs>
+          </div>
+        )}
 
         {/* Batch Mode Toggle */}
         {pendingAIResponses.length > 1 && (
