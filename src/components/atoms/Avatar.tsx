@@ -35,7 +35,7 @@ const Avatar: React.FC<AvatarProps> = ({
   const getUserTypeBorder = (type: string) => {
     switch (type) {
       case 'patient':
-        return 'ring-2 ring-blue-300';
+        return 'ring-2 ring-primary-300';
       case 'staff':
         return 'ring-2 ring-green-300';
       case 'ai':

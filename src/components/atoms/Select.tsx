@@ -55,7 +55,7 @@ const SelectContent = React.forwardRef<
       ref={ref}
       className={`
         overflow-hidden bg-white rounded-lg shadow-lg border border-gray-200
-        animate-in fade-in-80 z-50
+        animate-fade-in z-50
         ${className}
       `}
       position="popper"

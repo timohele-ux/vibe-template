@@ -86,7 +86,7 @@ const ConfidenceScore = React.forwardRef<HTMLDivElement, ConfidenceScoreProps>(
         {showProgressBar && (
           <div className="ml-2 w-12 bg-gray-200 rounded-full h-1.5">
             <div 
-              className={`h-1.5 rounded-full transition-all duration-300 ${progressBarClasses[level]}`}
+              className={`h-1.5 rounded-full transition-all duration-200 ${progressBarClasses[level]}`}
               style={{ width: `${score}%` }}
             />
           </div>

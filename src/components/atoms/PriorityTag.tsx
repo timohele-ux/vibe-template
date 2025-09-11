@@ -21,7 +21,7 @@ const PriorityTag = React.forwardRef<HTMLSpanElement, PriorityTagProps>(
     const priorityClasses = {
       critical: 'text-red-800 bg-red-100 border-red-300',
       urgent: 'text-orange-800 bg-orange-100 border-orange-300',
-      routine: 'text-blue-800 bg-blue-100 border-blue-300',
+      routine: 'text-primary-800 bg-primary-100 border-primary-300',
       low: 'text-gray-600 bg-gray-100 border-gray-300',
     };
     

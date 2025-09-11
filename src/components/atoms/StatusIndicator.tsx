@@ -19,7 +19,7 @@ const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
     const baseClasses = 'inline-flex items-center gap-2 transition-colors duration-200';
     
     const statusClasses = {
-      new: 'text-blue-800',
+      new: 'text-primary-800',
       'in-progress': 'text-yellow-800',
       'awaiting-approval': 'text-purple-800',
       resolved: 'text-green-800',
@@ -34,7 +34,7 @@ const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
 
     const getStatusDot = (statusType: CaseStatus): string => {
       const dotClasses = {
-        new: 'w-2 h-2 bg-blue-500 rounded-full',
+        new: 'w-2 h-2 bg-primary-500 rounded-full',
         'in-progress': 'w-2 h-2 bg-yellow-500 rounded-full',
         'awaiting-approval': 'w-2 h-2 bg-purple-500 rounded-full',
         resolved: 'w-2 h-2 bg-green-500 rounded-full',
