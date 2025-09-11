@@ -1,13 +1,16 @@
 import React, { useState, useEffect, useCallback } from 'react';
 import { Button, ConfidenceScore, Badge, SmallText, Caption, Text, Tooltip, Toggle, ResponseStateIndicator } from '../atoms';
 import EditReasonSelector from './EditReasonSelector';
-import type { AIResponse, ResponseState, EditReason, ResponseMode } from '../../types';
+import SuggestedResources from './SuggestedResources';
+import type { AIResponse, ResponseState, EditReason, ResponseMode, SuggestedResource } from '../../types';
 
 interface AIResponseDraftProps {
   aiResponse: AIResponse;
   onApprove: (id: string, modifications?: string[]) => void;
   onReject: (id: string, reason: string) => void;
   onEdit: (id: string, newContent: string, editReason: EditReason, customReason?: string) => void;
+  suggestedResources?: SuggestedResource[];
+  onResourceClick?: (resource: SuggestedResource) => void;
   isLoading?: boolean;
   className?: string;
 }
@@ -17,6 +20,8 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
   onApprove,
   onReject,
   onEdit,
+  suggestedResources = [],
+  onResourceClick,
   isLoading = false,
   className = ''
 }) => {
@@ -328,6 +333,15 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
           </div>
         )}
       </div>
+
+      {/* Suggested Resources Integration */}
+      {suggestedResources && suggestedResources.length > 0 && (
+        <SuggestedResources
+          resources={suggestedResources}
+          onResourceClick={onResourceClick}
+          className="mb-4"
+        />
+      )}
 
       {/* Internal Notes Section */}
       <div className="mb-4">

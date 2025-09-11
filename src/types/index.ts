@@ -103,6 +103,14 @@ export interface EditRecord {
   conversationId: string;
 }
 
+export interface SuggestedResource {
+  id: string;
+  title: string;
+  type: 'policy' | 'procedure' | 'documentation' | 'external';
+  url: string;
+  description?: string;
+}
+
 export interface User {
   id: string;
   firstName: string;

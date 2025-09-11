@@ -1,4 +1,4 @@
-import type { Case, Patient, Message, DashboardMetrics, User } from './types';
+import type { Case, Patient, Message, DashboardMetrics, User, SuggestedResource } from './types';
 
 // Enhanced Mock Patients with complex medical histories
 const mockPatients: Patient[] = [
@@ -636,3 +636,78 @@ export const mockUsers: User[] = [
     }
   }
 ];
+
+// Enhanced Mock Suggested Resources for contextual guidance
+export const mockSuggestedResources: SuggestedResource[] = [
+  {
+    id: 'res1',
+    title: 'Medication Interaction Guidelines',
+    type: 'policy',
+    url: '/resources/medication-interactions',
+    description: 'Comprehensive guide for identifying and managing drug interactions in polypharmacy patients.'
+  },
+  {
+    id: 'res2',
+    title: 'Blood Sugar Management Protocol',
+    type: 'procedure',
+    url: '/resources/diabetes-management',
+    description: 'Step-by-step protocol for patient education on blood glucose monitoring and management.'
+  },
+  {
+    id: 'res3',
+    title: 'Patient Communication Best Practices',
+    type: 'documentation',
+    url: '/resources/communication-guidelines',
+    description: 'Evidence-based approaches for effective patient communication in healthcare settings.'
+  },
+  {
+    id: 'res4',
+    title: 'American Diabetes Association Guidelines',
+    type: 'external',
+    url: 'https://diabetesjournals.org/care/issue',
+    description: 'Latest clinical practice recommendations from the American Diabetes Association.'
+  },
+  {
+    id: 'res5',
+    title: 'HIPAA Compliance for Patient Communications',
+    type: 'policy',
+    url: '/resources/hipaa-compliance',
+    description: 'Privacy and security requirements for patient communication channels and data handling.'
+  },
+  {
+    id: 'res6',
+    title: 'Emergency Escalation Procedure',
+    type: 'procedure',
+    url: '/resources/emergency-escalation',
+    description: 'Clear protocol for identifying and escalating urgent medical situations requiring immediate attention.'
+  }
+];
+
+// Context-specific resource mapping for different case types
+export const getResourcesByContext = (caseCategory: string, patientConditions: string[] = []): SuggestedResource[] => {
+  const allResources = mockSuggestedResources;
+  
+  // Filter resources based on case context
+  if (caseCategory === 'medication' || patientConditions.some(c => c.includes('Diabetes'))) {
+    return allResources.filter(r => 
+      r.id === 'res1' || r.id === 'res2' || r.id === 'res4'
+    );
+  }
+  
+  if (caseCategory === 'general-inquiry') {
+    return allResources.filter(r => 
+      r.id === 'res3' || r.id === 'res5'
+    );
+  }
+  
+  if (caseCategory === 'urgent' || caseCategory === 'clinical') {
+    return allResources.filter(r => 
+      r.id === 'res6' || r.id === 'res3' || r.id === 'res5'
+    );
+  }
+  
+  // Default: return communication and compliance resources
+  return allResources.filter(r => 
+    r.id === 'res3' || r.id === 'res5'
+  );
+};

@@ -8,7 +8,8 @@ import {
   BatchActions,
   PatientMessageCard
 } from '../molecules';
-import type { Case, User, Message, AIResponse, EditReason } from '../../types';
+import { getResourcesByContext } from '../../mockData';
+import type { Case, User, Message, AIResponse, EditReason, SuggestedResource } from '../../types';
 
 interface ActiveCasePanelProps {
   activeCase: Case | null;
@@ -356,6 +357,12 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                     onApprove={(id, modifications) => onApproveAIResponse(activeCase.id, id, modifications)}
                     onReject={(id, reason) => onRejectAIResponse(activeCase.id, id, reason)}
                     onEdit={(id, content, editReason, customReason) => onEditAIResponse(activeCase.id, id, content, editReason, customReason)}
+                    suggestedResources={getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions)}
+                    onResourceClick={(resource) => {
+                      // Future implementation: open resource in modal or new tab
+                      console.log('Resource clicked:', resource);
+                      window.open(resource.url, '_blank', 'noopener,noreferrer');
+                    }}
                     isLoading={isLoading}
                     className={batchMode ? 'ml-8' : ''}
                   />

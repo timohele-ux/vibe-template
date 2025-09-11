@@ -17,8 +17,9 @@ import {
   Tooltip,
   ResponseStateIndicator
 } from '../atoms';
-import { Card, FormField, PatientMessageCard, AIResponseDraft } from '../molecules';
+import { Card, FormField, PatientMessageCard, AIResponseDraft, SuggestedResources } from '../molecules';
 import { Form, Header } from '../organisms';
+import { mockSuggestedResources } from '../../mockData';
 
 const DesignSystem: React.FC = () => {
   const [inputValue, setInputValue] = React.useState('');
@@ -498,6 +499,64 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                 </div>
               </section>
 
+              {/* SuggestedResources */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">SuggestedResources</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-2xl space-y-6">
+                    <div>
+                      <h3 className="text-lg font-medium mb-3">Diabetes-Related Resources</h3>
+                      <SuggestedResources
+                        resources={mockSuggestedResources.filter(r => 
+                          r.id === 'res1' || r.id === 'res2' || r.id === 'res4'
+                        )}
+                        onResourceClick={(resource) => {
+                          console.log('Resource clicked:', resource.title);
+                          // Mock implementation - would normally open resource
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-medium mb-3">General Communication Resources</h3>
+                      <SuggestedResources
+                        resources={mockSuggestedResources.filter(r => 
+                          r.id === 'res3' || r.id === 'res5'
+                        )}
+                        onResourceClick={(resource) => {
+                          console.log('Resource clicked:', resource.title);
+                        }}
+                      />
+                    </div>
+
+                    <div>
+                      <h3 className="text-lg font-medium mb-3">All Resources</h3>
+                      <SuggestedResources
+                        resources={mockSuggestedResources}
+                        onResourceClick={(resource) => {
+                          console.log('Resource clicked:', resource.title);
+                        }}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Context-aware resource suggestions based on case type and patient conditions</li>
+                      <li>• Four resource types: Policy, Procedure, Documentation, External</li>
+                      <li>• Type-specific icons and color-coded badges</li>
+                      <li>• Optional descriptions with hover effects</li>
+                      <li>• External link indicators for resources outside the platform</li>
+                      <li>• Clickable resource cards with smooth animations</li>
+                      <li>• Resource counter and "View All" functionality</li>
+                      <li>• Integrates seamlessly below AI response content</li>
+                      <li>• Custom onResourceClick handler for flexible resource handling</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
               {/* AIResponseDraft */}
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">AIResponseDraft</h2>
@@ -508,10 +567,12 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                       onApprove={(id, modifications) => console.log('Approved:', id, modifications)}
                       onReject={(id, reason) => console.log('Rejected:', id, reason)}
                       onEdit={(id, content, editReason, customReason) => console.log('Edited:', id, content, editReason, customReason)}
+                      suggestedResources={mockSuggestedResources.slice(0, 3)}
+                      onResourceClick={(resource) => console.log('Resource clicked:', resource.title)}
                     />
                   </div>
                   <div className="mt-4 p-4 bg-white rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Phase 2 & 3 Features:</h3>
+                    <h3 className="text-lg font-medium mb-2">Phase 2, 3 & 4 Features:</h3>
                     <ul className="text-sm text-gray-600 space-y-1">
                       <li>• <strong>State Management:</strong> Pending → Editing → Resolved workflow</li>
                       <li>• <strong>Edit Reason Tracking:</strong> Mandatory reason selection for audit compliance</li>
@@ -519,6 +580,7 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                       <li>• <strong>State Animations:</strong> Fade-in, slide-in, and bounce transitions</li>
                       <li>• <strong>Response State Indicators:</strong> Animated dots with state-specific icons</li>
                       <li>• <strong>Enhanced Visual Feedback:</strong> Pulse effects, glow states, and smooth transitions</li>
+                      <li>• <strong>Suggested Resources Integration:</strong> Context-aware resource suggestions below response content</li>
                       <li>• <strong>Keyboard Shortcuts:</strong> Ctrl+E (edit), Ctrl+Enter (approve), Esc (cancel)</li>
                       <li>• <strong>Audit Trail Ready:</strong> Captures edit reasons and custom explanations</li>
                     </ul>
