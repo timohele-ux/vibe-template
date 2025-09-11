@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Badge, PriorityTag, StatusIndicator } from '../atoms';
+import { Avatar, Badge, PriorityTag, StatusIndicator, Heading4, BodyText, SmallText, Caption } from '../atoms';
 import { Card } from '../molecules';
 import type { Case } from '../../types';
 
@@ -66,24 +66,24 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
           {/* Header Row */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2 min-w-0">
-              <h4 className={`text-sm font-medium text-gray-900 truncate ${isUnread ? 'font-semibold' : ''}`}>
+              <Heading4 className={`text-gray-900 truncate ${isUnread ? 'font-semibold' : ''}`}>
                 {caseData.patient.firstName} {caseData.patient.lastName}
-              </h4>
+              </Heading4>
               {getUnreadCount() > 0 && (
                 <Badge variant="info" size="sm">
                   {getUnreadCount()}
                 </Badge>
               )}
             </div>
-            <span className="text-xs text-gray-500 whitespace-nowrap ml-2">
+            <Caption className="text-gray-500 whitespace-nowrap ml-2">
               {getTimeAgo(caseData.updatedAt)}
-            </span>
+            </Caption>
           </div>
 
           {/* Subject */}
-          <p className={`text-sm text-gray-700 mb-2 truncate ${isUnread ? 'font-medium' : ''}`}>
+          <BodyText className={`text-gray-700 mb-2 truncate ${isUnread ? 'font-medium' : ''}`}>
             {caseData.subject}
-          </p>
+          </BodyText>
 
           {/* Tags Row */}
           <div className="flex items-center justify-between">
@@ -98,11 +98,11 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
 
             {/* Response Time Indicator */}
             {caseData.estimatedResponseTime && (
-              <div className="flex items-center space-x-1 text-xs text-gray-400">
-                <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <div className="flex items-center space-x-1">
+                <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <span>{caseData.estimatedResponseTime}m</span>
+                <Caption className="text-gray-400">{caseData.estimatedResponseTime}m</Caption>
               </div>
             )}
           </div>

@@ -1,5 +1,5 @@
 import React from 'react';
-import { Badge } from '../atoms';
+import { Badge, Heading3, BodyText, SmallText, Caption } from '../atoms';
 import type { DashboardMetrics } from '../../types';
 
 interface QueueStatsProps {
@@ -87,14 +87,14 @@ const QueueStats: React.FC<QueueStatsProps> = ({
               {stat.icon}
               <div>
                 <div className="flex items-center space-x-1">
-                  <span className="text-lg font-bold">
+                  <Heading3 className="text-current">
                     {stat.value}
-                  </span>
+                  </Heading3>
                   {stat.urgent && (
-                    <span className="text-red-500 text-xs">!</span>
+                    <Caption className="text-red-500">!</Caption>
                   )}
                 </div>
-                <p className="text-xs opacity-75">{stat.label}</p>
+                <Caption className="opacity-75">{stat.label}</Caption>
               </div>
             </div>
 
@@ -107,15 +107,15 @@ const QueueStats: React.FC<QueueStatsProps> = ({
       </div>
 
       {/* Quick Actions */}
-      <div className="mt-3 flex items-center justify-between text-xs text-gray-500">
+      <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <span>AI Approval Rate: <strong className="text-green-600">{Math.round(metrics.aiApprovalRate)}%</strong></span>
-          <span>Escalation Rate: <strong className="text-red-600">{Math.round(metrics.escalationRate)}%</strong></span>
+          <Caption className="text-gray-500">AI Approval Rate: <strong className="text-green-600">{Math.round(metrics.aiApprovalRate)}%</strong></Caption>
+          <Caption className="text-gray-500">Escalation Rate: <strong className="text-red-600">{Math.round(metrics.escalationRate)}%</strong></Caption>
         </div>
         
         <div className="flex items-center space-x-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <span>Live updates</span>
+          <Caption className="text-gray-500">Live updates</Caption>
         </div>
       </div>
     </div>

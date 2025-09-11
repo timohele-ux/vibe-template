@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Badge, PriorityTag, StatusIndicator, Avatar } from '../atoms';
+import { Button, Badge, PriorityTag, StatusIndicator, Avatar, Heading2, Heading3, BodyText, SmallText } from '../atoms';
 import { 
   ConversationThread, 
   MessageComposer, 
@@ -138,10 +138,10 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Case Selected</h3>
-          <p className="text-gray-500 max-w-sm">
+          <Heading3 className="text-gray-900 mb-2">No Case Selected</Heading3>
+          <BodyText className="text-gray-500 max-w-sm">
             Select a patient case from the queue to view conversation history and manage AI responses
-          </p>
+          </BodyText>
         </div>
       </div>
     );
@@ -163,20 +163,20 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
             />
             <div>
               <div className="flex items-center space-x-2">
-                <h2 className="text-lg font-semibold text-gray-900">
+                <Heading2 className="text-gray-900">
                   {activeCase.patient.firstName} {activeCase.patient.lastName}
-                </h2>
+                </Heading2>
                 <StatusIndicator status={activeCase.status} size="sm" />
               </div>
-              <p className="text-sm text-gray-600 mt-1">{activeCase.subject}</p>
+              <BodyText className="text-gray-600 mt-1">{activeCase.subject}</BodyText>
               <div className="flex items-center space-x-4 mt-2">
                 <PriorityTag priority={activeCase.priority} size="sm" />
-                <span className="text-xs text-gray-500">
+                <SmallText className="text-gray-500">
                   Created {formatTimeAgo(activeCase.createdAt)}
-                </span>
-                <span className="text-xs text-gray-500">
+                </SmallText>
+                <SmallText className="text-gray-500">
                   Updated {formatTimeAgo(activeCase.updatedAt)}
-                </span>
+                </SmallText>
               </div>
             </div>
           </div>
@@ -251,9 +251,9 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
         {pendingAIResponses.length > 0 && (
           <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-gray-50">
             <div className="mb-3 flex items-center justify-between">
-              <h3 className="text-sm font-medium text-gray-700">
+              <Heading3 className="text-gray-700">
                 Pending AI Responses ({pendingAIResponses.length})
-              </h3>
+              </Heading3>
               {!batchMode && (
                 <Badge variant="warning" size="sm">
                   Requires Review
@@ -311,12 +311,12 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
       {showEscalationModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <Heading3 className="text-gray-900 mb-4">
               Escalate Case
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            </Heading3>
+            <BodyText className="text-gray-600 mb-4">
               Escalate this case to a supervisor or specialist. Please provide a reason for escalation.
-            </p>
+            </BodyText>
             <textarea
               value={escalationReason}
               onChange={(e) => setEscalationReason(e.target.value)}

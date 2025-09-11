@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, Avatar, Badge, Input } from '../atoms';
+import { Button, Avatar, Badge, Input, Heading3, BodyText, SmallText, Caption } from '../atoms';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 import * as Dialog from '@radix-ui/react-dialog';
 
@@ -144,34 +144,34 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
                 sideOffset={8}
               >
                 <div className="p-3 border-b border-gray-100">
-                  <h3 className="font-semibold text-gray-900">Notifications</h3>
+                  <Heading3 className="text-gray-900">Notifications</Heading3>
                 </div>
                 
                 <div className="py-2">
                   <DropdownMenu.Item className="flex items-start space-x-3 px-3 py-2 rounded-md hover:bg-gray-50 cursor-pointer">
                     <div className="w-2 h-2 bg-red-500 rounded-full mt-2"></div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">Critical case requires attention</p>
-                      <p className="text-xs text-gray-500">Patient J. Smith - chest pain inquiry</p>
-                      <p className="text-xs text-gray-400">2 minutes ago</p>
+                      <SmallText className="font-medium text-gray-900">Critical case requires attention</SmallText>
+                      <Caption className="text-gray-500">Patient J. Smith - chest pain inquiry</Caption>
+                      <Caption className="text-gray-400">2 minutes ago</Caption>
                     </div>
                   </DropdownMenu.Item>
 
                   <DropdownMenu.Item className="flex items-start space-x-3 px-3 py-2 rounded-md hover:bg-gray-50 cursor-pointer">
                     <div className="w-2 h-2 bg-yellow-500 rounded-full mt-2"></div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">AI confidence low</p>
-                      <p className="text-xs text-gray-500">Case #1234 - medication dosage question</p>
-                      <p className="text-xs text-gray-400">5 minutes ago</p>
+                      <SmallText className="font-medium text-gray-900">AI confidence low</SmallText>
+                      <Caption className="text-gray-500">Case #1234 - medication dosage question</Caption>
+                      <Caption className="text-gray-400">5 minutes ago</Caption>
                     </div>
                   </DropdownMenu.Item>
 
                   <DropdownMenu.Item className="flex items-start space-x-3 px-3 py-2 rounded-md hover:bg-gray-50 cursor-pointer">
                     <div className="w-2 h-2 bg-blue-500 rounded-full mt-2"></div>
                     <div className="flex-1">
-                      <p className="text-sm font-medium text-gray-900">New message received</p>
-                      <p className="text-xs text-gray-500">Patient follow-up on appointment</p>
-                      <p className="text-xs text-gray-400">10 minutes ago</p>
+                      <SmallText className="font-medium text-gray-900">New message received</SmallText>
+                      <Caption className="text-gray-500">Patient follow-up on appointment</Caption>
+                      <Caption className="text-gray-400">10 minutes ago</Caption>
                     </div>
                   </DropdownMenu.Item>
                 </div>
@@ -209,8 +209,8 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
                   isOnline={true}
                 />
                 <div className="hidden md:block text-left">
-                  <p className="text-sm font-medium text-gray-900">{currentUser.name}</p>
-                  <p className="text-xs text-gray-500">{currentUser.role}</p>
+                  <SmallText className="font-medium text-gray-900">{currentUser.name}</SmallText>
+                  <Caption className="text-gray-500">{currentUser.role}</Caption>
                 </div>
                 <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
@@ -225,8 +225,8 @@ const TopNavigation: React.FC<TopNavigationProps> = ({
                 sideOffset={8}
               >
                 <div className="px-3 py-2 border-b border-gray-100">
-                  <p className="font-medium text-gray-900">{currentUser.name}</p>
-                  <p className="text-sm text-gray-500">{currentUser.role}</p>
+                  <SmallText className="font-medium text-gray-900">{currentUser.name}</SmallText>
+                  <Caption className="text-gray-500">{currentUser.role}</Caption>
                 </div>
 
                 <div className="py-1">

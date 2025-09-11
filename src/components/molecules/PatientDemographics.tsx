@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Badge, Button } from '../atoms';
+import { Avatar, Badge, Button, Heading3, BodyText, SmallText, Caption } from '../atoms';
 import type { Patient } from '../../types';
 
 interface PatientDemographicsProps {
@@ -53,9 +53,9 @@ const PatientDemographics: React.FC<PatientDemographicsProps> = ({
         />
         <div className="flex-1">
           <div className="flex items-center justify-between">
-            <h3 className="text-lg font-semibold text-gray-900">
+            <Heading3 className="text-gray-900">
               {patient.firstName} {patient.lastName}
-            </h3>
+            </Heading3>
             <Button
               variant="outline"
               size="xs"
@@ -67,21 +67,21 @@ const PatientDemographics: React.FC<PatientDemographicsProps> = ({
               Edit
             </Button>
           </div>
-          <div className="text-sm text-gray-600">
+          <BodyText className="text-gray-600">
             Age {calculateAge(patient.dateOfBirth)} • DOB: {new Date(patient.dateOfBirth).toLocaleDateString()}
-          </div>
+          </BodyText>
           {patient.preferredLanguage && (
-            <div className="text-xs text-gray-500 mt-1">
+            <Caption className="text-gray-500 mt-1">
               Preferred Language: {patient.preferredLanguage}
-            </div>
+            </Caption>
           )}
         </div>
       </div>
 
       {/* Contact Information */}
       <div className="space-y-3 mb-4">
-        <div className="flex items-center justify-between text-sm">
-          <span className="font-medium text-gray-700">Contact Information</span>
+        <div className="flex items-center justify-between">
+          <SmallText className="font-medium text-gray-700">Contact Information</SmallText>
         </div>
         
         <div className="space-y-2 pl-2">
@@ -90,7 +90,7 @@ const PatientDemographics: React.FC<PatientDemographicsProps> = ({
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 8l7.89 4.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
               </svg>
-              <span className="text-sm text-gray-600">{patient.email}</span>
+              <SmallText className="text-gray-600">{patient.email}</SmallText>
             </div>
           )}
           
@@ -99,7 +99,7 @@ const PatientDemographics: React.FC<PatientDemographicsProps> = ({
               <svg className="w-4 h-4 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 5a2 2 0 012-2h3.28a1 1 0 01.948.684l1.498 4.493a1 1 0 01-.502 1.21l-2.257 1.13a11.042 11.042 0 005.516 5.516l1.13-2.257a1 1 0 011.21-.502l4.493 1.498a1 1 0 01.684.949V19a2 2 0 01-2 2h-1C9.716 21 3 14.284 3 6V5z" />
               </svg>
-              <span className="text-sm text-gray-600">{formatPhoneNumber(patient.phone)}</span>
+              <SmallText className="text-gray-600">{formatPhoneNumber(patient.phone)}</SmallText>
             </div>
           )}
         </div>

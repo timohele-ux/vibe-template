@@ -9,7 +9,7 @@ export { default as Slider } from './Slider';
 export { default as Toggle } from './Toggle';
 
 // Typography and content
-export { default as Text } from './Text';
+export { default as Text, Heading1, Heading2, Heading3, Heading4, Heading5, Heading6, BodyText, SmallText, Caption } from './Text';
 export { default as Label } from './Label';
 
 // Visual components

@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { Input, Button, Tabs } from '../atoms';
+import { Input, Button, Tabs, Heading3 } from '../atoms';
 import { CaseListItem, QueueFilters, QueueStats } from '../molecules';
 import type { Case, QueueFilters as QueueFiltersType, DashboardMetrics } from '../../types';
 
@@ -110,7 +110,7 @@ const SupportRequestsQueue: React.FC<SupportRequestsQueueProps> = ({
       {/* Header */}
       <div className="p-4 border-b border-gray-200 space-y-4">
         <div className="flex items-center justify-between">
-          <h2 className="text-lg font-semibold text-gray-900">Support Queue</h2>
+          <Heading3 className="text-gray-900">Support Queue</Heading3>
           <div className="flex items-center space-x-2">
             <Button variant="ghost" size="sm" className="p-1">
               <svg className="w-4 h-4 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">

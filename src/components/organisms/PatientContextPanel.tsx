@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Tabs } from '../atoms';
+import { Tabs, Heading2, Heading3, BodyText, SmallText, Caption } from '../atoms';
 import { PatientDemographics, MedicalHistory, ChatHistoryTab } from '../molecules';
 import type { Patient, Case } from '../../types';
 
@@ -25,10 +25,10 @@ const PatientContextPanel: React.FC<PatientContextPanelProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
             </svg>
           </div>
-          <h3 className="text-lg font-medium text-gray-900 mb-2">No Patient Selected</h3>
-          <p className="text-sm text-gray-500">
+          <Heading3 className="text-gray-900 mb-2">No Patient Selected</Heading3>
+          <BodyText className="text-gray-500">
             Select an active case to view patient information, medical history, and conversation patterns
-          </p>
+          </BodyText>
         </div>
       </div>
     );
@@ -74,10 +74,10 @@ const PatientContextPanel: React.FC<PatientContextPanelProps> = ({
         <div className="flex items-center space-x-3 mb-4">
           <div className="w-2 h-8 bg-gradient-to-b from-purple-500 to-blue-500 rounded"></div>
           <div>
-            <h2 className="text-lg font-semibold text-gray-900">Patient Context</h2>
-            <p className="text-sm text-gray-600">
+            <Heading2 className="text-gray-900">Patient Context</Heading2>
+            <BodyText className="text-gray-600">
               {patient.firstName} {patient.lastName}
-            </p>
+            </BodyText>
           </div>
         </div>
 
@@ -117,7 +117,7 @@ const PatientContextPanel: React.FC<PatientContextPanelProps> = ({
             
             {/* Quick Actions */}
             <div className="bg-gray-50 rounded-lg p-4">
-              <div className="text-sm font-medium text-gray-700 mb-3">Quick Actions</div>
+              <SmallText className="font-medium text-gray-700 mb-3">Quick Actions</SmallText>
               <div className="grid grid-cols-2 gap-2">
                 <button className="flex items-center space-x-2 p-2 bg-white rounded border border-gray-200 hover:bg-gray-50 text-sm">
                   <svg className="w-4 h-4 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -162,9 +162,9 @@ const PatientContextPanel: React.FC<PatientContextPanelProps> = ({
 
       {/* Footer Info */}
       <div className="flex-shrink-0 bg-gray-50 border-t border-gray-200 p-3">
-        <div className="text-xs text-gray-500 text-center">
+        <Caption className="text-gray-500 text-center">
           Last updated: {new Date().toLocaleString()} • Patient ID: {patient.id}
-        </div>
+        </Caption>
       </div>
     </div>
   );
