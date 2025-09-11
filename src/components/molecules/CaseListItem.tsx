@@ -46,9 +46,9 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
   return (
     <div
       className={`
-        p-3 border-b border-gray-100 cursor-pointer transition-colors hover:bg-gray-50
-        ${isSelected ? 'bg-blue-50 border-blue-200' : ''}
-        ${isUnread ? 'border-l-4 border-l-blue-500' : 'border-l-4 border-l-transparent'}
+        p-4 border-b border-gray-100 cursor-pointer transition-colors duration-200 hover:bg-gray-50
+        ${isSelected ? 'bg-primary-50 border-primary-200' : ''}
+        ${isUnread ? 'border-l-4 border-l-primary-500' : 'border-l-4 border-l-transparent'}
       `}
       onClick={handleClick}
     >
@@ -64,8 +64,8 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
         {/* Case Content */}
         <div className="flex-1 min-w-0">
           {/* Header Row */}
-          <div className="flex items-center justify-between mb-1">
-            <div className="flex items-center space-x-2">
+          <div className="flex items-center justify-between mb-2">
+            <div className="flex items-center space-x-2 min-w-0">
               <h4 className={`text-sm font-medium text-gray-900 truncate ${isUnread ? 'font-semibold' : ''}`}>
                 {caseData.patient.firstName} {caseData.patient.lastName}
               </h4>
@@ -85,11 +85,6 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
             {caseData.subject}
           </p>
 
-          {/* Last Message Preview */}
-          <p className="text-xs text-gray-500 mb-2 line-clamp-2">
-            {getLastMessage()}
-          </p>
-
           {/* Tags Row */}
           <div className="flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -99,11 +94,6 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
                 size="sm" 
                 showLabel={false}
               />
-              {caseData.category && (
-                <Badge variant="default" size="sm">
-                  {caseData.category}
-                </Badge>
-              )}
             </div>
 
             {/* Response Time Indicator */}

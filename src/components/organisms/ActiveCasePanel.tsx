@@ -148,7 +148,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
   }
 
   const pendingAIResponses = activeCase.aiResponses.filter(response => !response.isApproved);
-  const approvedMessages = [...activeCase.messages, ...activeCase.aiResponses.filter(response => response.isApproved)];
+  const approvedAIResponses = activeCase.aiResponses.filter(response => response.isApproved);
 
   return (
     <div className={`flex flex-col h-full bg-white ${className}`}>
@@ -169,43 +169,45 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                 <StatusIndicator status={activeCase.status} size="sm" />
               </div>
               <p className="text-sm text-gray-600 mt-1">{activeCase.subject}</p>
-              <div className="flex items-center space-x-3 mt-2">
+              <div className="flex items-center space-x-4 mt-2">
                 <PriorityTag priority={activeCase.priority} size="sm" />
                 <span className="text-xs text-gray-500">
                   Created {formatTimeAgo(activeCase.createdAt)}
                 </span>
                 <span className="text-xs text-gray-500">
-                  Last updated {formatTimeAgo(activeCase.updatedAt)}
+                  Updated {formatTimeAgo(activeCase.updatedAt)}
                 </span>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
-            {/* Case Actions */}
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowEscalationModal(true)}
-              disabled={isLoading}
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
-              </svg>
-              Escalate
-            </Button>
-            
-            <Button
-              variant="secondary"
-              size="sm"
-              onClick={() => onUpdateCaseStatus(activeCase.id, 'resolved')}
-              disabled={isLoading || activeCase.status === 'resolved'}
-            >
-              <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-              </svg>
-              Mark Resolved
-            </Button>
+          <div className="flex items-center space-x-3">
+            {/* Primary Actions */}
+            <div className="flex items-center space-x-2">
+              <Button
+                variant="outline"
+                size="sm"
+                onClick={() => setShowEscalationModal(true)}
+                disabled={isLoading}
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
+                </svg>
+                Escalate
+              </Button>
+              
+              <Button
+                variant="primary"
+                size="sm"
+                onClick={() => onUpdateCaseStatus(activeCase.id, 'resolved')}
+                disabled={isLoading || activeCase.status === 'resolved'}
+              >
+                <svg className="w-4 h-4 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                Resolve
+              </Button>
+            </div>
           </div>
         </div>
 
@@ -240,8 +242,8 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
         {/* Conversation Thread */}
         <div className="flex-1 overflow-auto">
           <ConversationThread
-            messages={approvedMessages}
-            aiResponses={[]}
+            messages={activeCase.messages}
+            aiResponses={approvedAIResponses}
           />
         </div>
 
@@ -334,7 +336,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                 Cancel
               </Button>
               <Button
-                variant="escalate"
+                variant="danger"
                 size="sm"
                 onClick={handleEscalateCase}
                 disabled={!escalationReason.trim()}

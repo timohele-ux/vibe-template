@@ -4,12 +4,14 @@ interface CardProps {
   children: React.ReactNode;
   className?: string;
   padding?: 'sm' | 'md' | 'lg';
+  shadow?: 'none' | 'sm' | 'md' | 'lg';
 }
 
 const Card: React.FC<CardProps> = ({ 
   children, 
   className = '', 
-  padding = 'md' 
+  padding = 'md',
+  shadow = 'sm'
 }) => {
   const paddingClasses = {
     sm: 'p-4',
@@ -17,8 +19,15 @@ const Card: React.FC<CardProps> = ({
     lg: 'p-8'
   };
 
+  const shadowClasses = {
+    none: '',
+    sm: 'shadow-sm',
+    md: 'shadow-md',
+    lg: 'shadow-lg'
+  };
+
   return (
-    <div className={`bg-white rounded-lg shadow-md ${paddingClasses[padding]} ${className}`}>
+    <div className={`bg-white rounded-lg border border-gray-200 ${paddingClasses[padding]} ${shadowClasses[shadow]} ${className}`}>
       {children}
     </div>
   );
