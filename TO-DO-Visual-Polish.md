@@ -25,7 +25,6 @@ Transform the MediReply healthcare communication platform to reduce visual clutt
   - Clinical neutrals (whites, light grays) for primary surfaces
   - Medical semantic colors: critical (red), urgent (amber), routine (blue), success (green)
   - Confidence indicators with low-saturation, accessible tones
-  - HIPAA-compliant UI patterns (no PHI exposure in design elements)
 - [ ] **Medical Typography Hierarchy** 
   - Clear hierarchy optimized for clinical environments
   - High legibility fonts suitable for medical professionals
@@ -33,7 +32,6 @@ Transform the MediReply healthcare communication platform to reduce visual clutt
   - Emergency/critical information typography treatment
 - [ ] **Healthcare Spacing System**
   - 8px baseline grid for consistent clinical interface
-  - Touch-friendly spacing for mobile medical devices
   - Breathing room around critical information and AI confidence scores
 
 ### 1.2 Healthcare Atomic Component Enhancement
