@@ -9,7 +9,7 @@ const Checkbox = React.forwardRef<
   React.ElementRef<typeof CheckboxPrimitive.Root>,
   CheckboxProps
 >(({ className = '', label, id, ...props }, ref) => {
-  const checkboxId = id || `checkbox-${Math.random().toString(36).substr(2, 9)}`;
+  const checkboxId = id || `checkbox-${props.name || 'field'}`;
   
   return (
     <div className="flex items-center gap-2">
@@ -18,9 +18,9 @@ const Checkbox = React.forwardRef<
         id={checkboxId}
         className={`
           w-5 h-5 rounded border-2 border-gray-300 
-          data-[state=checked]:bg-blue-600 data-[state=checked]:border-blue-600
-          data-[state=indeterminate]:bg-blue-600 data-[state=indeterminate]:border-blue-600
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+          data-[state=checked]:bg-primary-600 data-[state=checked]:border-primary-600
+          data-[state=indeterminate]:bg-primary-600 data-[state=indeterminate]:border-primary-600
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-colors duration-200
           ${className}

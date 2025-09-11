@@ -2,7 +2,7 @@ import React from 'react';
 
 interface BadgeProps {
   children: React.ReactNode;
-  variant?: 'default' | 'success' | 'warning' | 'error' | 'info' | 'critical' | 'urgent' | 'routine';
+  variant?: 'default' | 'success' | 'warning' | 'error' | 'info';
   size?: 'sm' | 'md' | 'lg';
   className?: string;
 }
@@ -13,17 +13,14 @@ const Badge: React.FC<BadgeProps> = ({
   size = 'md',
   className = ''
 }) => {
-  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-full';
+  const baseClasses = 'inline-flex items-center justify-center font-medium rounded-full transition-colors duration-200';
   
   const variantClasses = {
-    default: 'bg-gray-100 text-gray-800',
-    success: 'bg-green-100 text-green-800',
-    warning: 'bg-yellow-100 text-yellow-800',
-    error: 'bg-red-100 text-red-800',
-    info: 'bg-blue-100 text-blue-800',
-    critical: 'bg-red-100 text-red-800 border-red-300 border',
-    urgent: 'bg-orange-100 text-orange-800 border-orange-300 border',
-    routine: 'bg-blue-100 text-blue-800 border-blue-300 border'
+    default: 'bg-gray-100 text-gray-800 hover:bg-gray-200',
+    success: 'bg-green-100 text-green-800 hover:bg-green-200',
+    warning: 'bg-yellow-100 text-yellow-800 hover:bg-yellow-200',
+    error: 'bg-red-100 text-red-800 hover:bg-red-200',
+    info: 'bg-blue-100 text-blue-800 hover:bg-blue-200'
   };
   
   const sizeClasses = {

@@ -62,7 +62,7 @@ const TabsTrigger: React.FC<TabsTriggerProps> = ({ value, children, className = 
       className={`
         inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium 
         ring-offset-white transition-all focus-visible:outline-none focus-visible:ring-2 
-        focus-visible:ring-gray-950 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
+        focus-visible:ring-primary-500 focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50
         ${isActive 
           ? 'bg-white text-gray-950 shadow-sm' 
           : 'text-gray-700 hover:text-gray-950'
@@ -82,7 +82,7 @@ const TabsContent: React.FC<TabsContentProps> = ({ value, children, className = 
   if (context.activeTab !== value) return null;
 
   return (
-    <div className={`mt-6 ${className}`}>
+    <div className={`mt-4 ${className}`}>
       {children}
     </div>
   );

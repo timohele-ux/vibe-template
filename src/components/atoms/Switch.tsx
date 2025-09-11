@@ -9,7 +9,7 @@ const Switch = React.forwardRef<
   React.ElementRef<typeof SwitchPrimitive.Root>,
   SwitchProps
 >(({ className = '', label, id, ...props }, ref) => {
-  const switchId = id || `switch-${Math.random().toString(36).substr(2, 9)}`;
+  const switchId = id || `switch-${props.name || 'field'}`;
   
   return (
     <div className="flex items-center gap-2">
@@ -18,8 +18,8 @@ const Switch = React.forwardRef<
         id={switchId}
         className={`
           w-11 h-6 bg-gray-300 rounded-full relative
-          data-[state=checked]:bg-blue-600
-          focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+          data-[state=checked]:bg-primary-600
+          focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
           disabled:opacity-50 disabled:cursor-not-allowed
           transition-colors duration-200
           ${className}

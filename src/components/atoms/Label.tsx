@@ -15,6 +15,7 @@ const Label = React.forwardRef<
       className={`
         text-sm font-medium text-gray-700 
         peer-disabled:opacity-50
+        mb-2
         ${className}
       `}
       {...props}

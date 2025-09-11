@@ -16,14 +16,14 @@ const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
     showLabel = true,
     ...props 
   }, ref) => {
-    const baseClasses = 'inline-flex items-center gap-2';
+    const baseClasses = 'inline-flex items-center gap-2 transition-colors duration-200';
     
     const statusClasses = {
-      new: 'text-blue-700',
-      'in-progress': 'text-yellow-700',
-      'awaiting-approval': 'text-purple-700',
-      resolved: 'text-green-700',
-      escalated: 'text-red-700',
+      new: 'text-blue-800',
+      'in-progress': 'text-yellow-800',
+      'awaiting-approval': 'text-purple-800',
+      resolved: 'text-green-800',
+      escalated: 'text-red-800',
     };
     
     const sizeClasses = {
@@ -33,18 +33,14 @@ const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
     };
 
     const getStatusDot = (statusType: CaseStatus): string => {
-      switch (statusType) {
-        case 'new':
-          return '🔵';
-        case 'in-progress':
-          return '🟡';
-        case 'awaiting-approval':
-          return '🟣';
-        case 'resolved':
-          return '🟢';
-        case 'escalated':
-          return '🔴';
-      }
+      const dotClasses = {
+        new: 'w-2 h-2 bg-blue-500 rounded-full',
+        'in-progress': 'w-2 h-2 bg-yellow-500 rounded-full',
+        'awaiting-approval': 'w-2 h-2 bg-purple-500 rounded-full',
+        resolved: 'w-2 h-2 bg-green-500 rounded-full',
+        escalated: 'w-2 h-2 bg-red-500 rounded-full',
+      };
+      return dotClasses[statusType];
     };
 
     const getStatusLabel = (statusType: CaseStatus): string => {
@@ -68,7 +64,7 @@ const StatusIndicator = React.forwardRef<HTMLDivElement, StatusIndicatorProps>(
         ref={ref}
         {...props}
       >
-        <span>{getStatusDot(status)}</span>
+        <div className={getStatusDot(status)} />
         {showLabel && (
           <span className="font-medium">
             {getStatusLabel(status)}

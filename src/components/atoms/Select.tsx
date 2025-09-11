@@ -21,7 +21,7 @@ const SelectTrigger = React.forwardRef<
     ref={ref}
     className={`
       w-full px-3 py-2 text-left bg-white border border-gray-300 rounded-lg
-      hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+      hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
       disabled:opacity-50 disabled:cursor-not-allowed
       flex items-center justify-between gap-2
       transition-colors duration-200
@@ -103,15 +103,12 @@ const SelectItem = React.forwardRef<
 
 SelectItem.displayName = 'SelectItem';
 
-const Select = React.forwardRef<
-  React.ElementRef<typeof SelectPrimitive.Root>,
-  SelectProps
->(({ options, placeholder = 'Select...', label, children, ...props }, ref) => {
+const Select: React.FC<SelectProps> = ({ options, placeholder = 'Select...', label, children, ...props }) => {
   if (children) {
     return (
       <div className="w-full">
         {label && (
-          <label className="block text-sm font-medium text-gray-700 mb-1">
+          <label className="block text-sm font-medium text-gray-700 mb-2">
             {label}
           </label>
         )}
@@ -123,7 +120,7 @@ const Select = React.forwardRef<
   return (
     <div className="w-full">
       {label && (
-        <label className="block text-sm font-medium text-gray-700 mb-1">
+        <label className="block text-sm font-medium text-gray-700 mb-2">
           {label}
         </label>
       )}
@@ -141,7 +138,7 @@ const Select = React.forwardRef<
       </SelectPrimitive.Root>
     </div>
   );
-});
+};
 
 Select.displayName = 'Select';
 
