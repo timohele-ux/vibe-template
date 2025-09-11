@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { MediReplyDashboard } from '../templates';
 import { DashboardProvider, useDashboard, dashboardActions } from '../../lib/DashboardContext';
+import { ConversationStateProvider } from '../../lib/ConversationStateContext';
 import { useDashboardDataService } from '../../lib/DashboardDataService';
 import { useCases, useAIResponses, useNotifications } from '../../lib/hooks';
 import { mockCases, mockUsers, mockMetrics } from '../../mockData';
@@ -290,12 +291,14 @@ const MediReplyDashboardContainer: React.FC = () => {
 // Main component with context provider and enhanced data integration
 const MediReplyApp: React.FC = () => {
   return (
-    <DashboardProvider
-      initialCases={mockCases}
-      initialUser={mockUsers[0]} // Use first mock user as current user
-    >
-      <MediReplyDashboardContainer />
-    </DashboardProvider>
+    <ConversationStateProvider>
+      <DashboardProvider
+        initialCases={mockCases}
+        initialUser={mockUsers[0]} // Use first mock user as current user
+      >
+        <MediReplyDashboardContainer />
+      </DashboardProvider>
+    </ConversationStateProvider>
   );
 };
 

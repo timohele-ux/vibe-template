@@ -9,6 +9,8 @@ import {
   PatientMessageCard
 } from '../molecules';
 import { getResourcesByContext } from '../../mockData';
+import { useConversationState } from '../../lib/ConversationStateContext';
+import { useWorkflowState } from '../../lib/useWorkflowState';
 import type { Case, User, Message, AIResponse, EditReason, SuggestedResource } from '../../types';
 
 interface ActiveCasePanelProps {
@@ -45,6 +47,56 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
   const [showEscalationModal, setShowEscalationModal] = useState(false);
   const [escalationReason, setEscalationReason] = useState('');
   const [showDetails, setShowDetails] = useState(false);
+
+  // Phase 6: Workflow State Management Integration
+  const { state, actions } = useConversationState();
+  const workflowState = useWorkflowState();
+
+  // Initialize conversation state when case changes
+  useEffect(() => {
+    if (activeCase) {
+      actions.setActiveConversation(activeCase);
+      
+      // Set up workflow flags based on case properties
+      actions.updateWorkflowFlags({
+        requiresClinicalReview: activeCase.category === 'clinical' || activeCase.priority === 'critical',
+        isHighPriority: activeCase.priority === 'critical' || activeCase.priority === 'urgent',
+        lastActivity: new Date()
+      });
+
+      // Generate suggested resources based on context
+      const resources = getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions);
+      actions.setSuggestedResources(resources);
+    }
+  }, [activeCase, actions]);
+
+  // Enhanced edit handler with audit trail
+  const handleEnhancedEdit = async (responseId: string, content: string, editReason: EditReason, customReason?: string) => {
+    if (!activeCase) return;
+
+    // Use workflow state management
+    const validation = workflowState.validateTransition('editing', editReason, customReason);
+    
+    if (!validation.canTransition) {
+      console.warn('Edit transition not allowed:', validation.blockingFactors);
+      return;
+    }
+
+    // Add to audit trail before making the edit
+    if (state.currentUser) {
+      actions.addEditRecord({
+        userId: state.currentUser.id,
+        reason: editReason,
+        customReason,
+        originalContent: activeCase.aiResponses.find(r => r.id === responseId)?.content || '',
+        modifiedContent: content,
+        conversationId: activeCase.id
+      });
+    }
+
+    // Execute the edit
+    onEditAIResponse(activeCase.id, responseId, content, editReason, customReason);
+  };
 
   // Reset batch mode when case changes
   useEffect(() => {
@@ -174,7 +226,29 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
             </div>
           </div>
 
-          <div className="flex items-center space-x-2">
+          <div className="flex items-center space-x-3">
+            {/* Phase 6: Workflow Status Indicators */}
+            {workflowState.isAuditRequired && (
+              <Badge variant="warning" className="text-xs">
+                Audit Required
+              </Badge>
+            )}
+            {state.workflowFlags.requiresClinicalReview && (
+              <Badge variant="info" className="text-xs">
+                Clinical Review
+              </Badge>
+            )}
+            {state.workflowFlags.isEscalated && (
+              <Badge variant="error" className="text-xs">
+                Escalated
+              </Badge>
+            )}
+            {state.editHistory.length > 0 && (
+              <Badge variant="default" className="text-xs">
+                {state.editHistory.length} Edit{state.editHistory.length !== 1 ? 's' : ''}
+              </Badge>
+            )}
+
             <Toggle
               pressed={showDetails}
               onPressedChange={setShowDetails}
@@ -191,6 +265,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
               <Tabs.List>
                 <Tabs.Trigger value="case-info">Case Info</Tabs.Trigger>
                 <Tabs.Trigger value="patient-info">Patient Info</Tabs.Trigger>
+                <Tabs.Trigger value="audit-trail">Audit Trail</Tabs.Trigger>
                 <Tabs.Trigger value="actions">Actions</Tabs.Trigger>
               </Tabs.List>
               
@@ -238,6 +313,71 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                       </div>
                     </div>
                   )}
+                </div>
+              </Tabs.Content>
+              
+              <Tabs.Content value="audit-trail">
+                <div className="space-y-3">
+                  {state.editHistory.length > 0 ? (
+                    <div className="space-y-2">
+                      <SmallText weight="medium" className="text-gray-700">
+                        Edit History ({state.editHistory.length} edits)
+                      </SmallText>
+                      <div className="space-y-2 max-h-40 overflow-y-auto">
+                        {state.editHistory.slice().reverse().map((edit, index) => (
+                          <div key={edit.id} className="bg-gray-50 rounded-lg p-3 text-sm">
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant={edit.reason === 'other' ? 'warning' : 'default'} size="sm">
+                                {edit.reason.replace('-', ' ')}
+                              </Badge>
+                              <Caption variant="muted">
+                                {formatTimeAgo(edit.timestamp)}
+                              </Caption>
+                            </div>
+                            {edit.customReason && (
+                              <Caption className="text-gray-600 mb-1">
+                                {edit.customReason}
+                              </Caption>
+                            )}
+                            <Caption variant="muted">
+                              User: {edit.userId} • Content: {edit.modifiedContent.length} chars
+                            </Caption>
+                          </div>
+                        ))}
+                      </div>
+                    </div>
+                  ) : (
+                    <div className="text-center py-4">
+                      <Caption variant="muted">No edits recorded</Caption>
+                    </div>
+                  )}
+                  
+                  {/* Workflow Status Summary */}
+                  <div className="pt-3 border-t border-gray-100">
+                    <SmallText weight="medium" className="text-gray-700 mb-2">
+                      Workflow Status
+                    </SmallText>
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <Caption variant="muted">Current Mode</Caption>
+                        <Badge variant={workflowState.currentMode === 'resolved' ? 'success' : 'default'}>
+                          {workflowState.currentMode}
+                        </Badge>
+                      </div>
+                      <div>
+                        <Caption variant="muted">Last Activity</Caption>
+                        <Caption>{formatTimeAgo(state.workflowFlags.lastActivity)}</Caption>
+                      </div>
+                    </div>
+                    
+                    {workflowState.isAuditRequired && (
+                      <div className="mt-2 p-2 bg-yellow-50 border border-yellow-200 rounded-lg">
+                        <Caption className="text-yellow-800">
+                          <strong>Audit Required:</strong> This case requires audit trail review due to extensive editing or escalation.
+                        </Caption>
+                      </div>
+                    )}
+                  </div>
                 </div>
               </Tabs.Content>
               
@@ -356,7 +496,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                     aiResponse={response}
                     onApprove={(id, modifications) => onApproveAIResponse(activeCase.id, id, modifications)}
                     onReject={(id, reason) => onRejectAIResponse(activeCase.id, id, reason)}
-                    onEdit={(id, content, editReason, customReason) => onEditAIResponse(activeCase.id, id, content, editReason, customReason)}
+                    onEdit={(id, content, editReason, customReason) => handleEnhancedEdit(id, content, editReason, customReason)}
                     suggestedResources={getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions)}
                     onResourceClick={(resource) => {
                       // Future implementation: open resource in modal or new tab

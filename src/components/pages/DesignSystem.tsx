@@ -3,6 +3,7 @@ import {
   Avatar,
   Badge,
   Button,
+  Caption,
   Checkbox,
   Input,
   Label,
@@ -765,6 +766,101 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                       <li>• <strong>Keyboard Shortcut System:</strong> Global shortcuts with context-aware help modal (Ctrl+/)</li>
                       <li>• <strong>Keyboard Shortcuts:</strong> Ctrl+E (edit), Ctrl+Enter (approve), Esc (cancel)</li>
                       <li>• <strong>Audit Trail Ready:</strong> Captures edit reasons and custom explanations</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              {/* Phase 6: Workflow State Management Demo */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">Phase 6: Workflow State Management</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-4xl">
+                    <div className="bg-white rounded-lg border border-gray-200 p-6">
+                      <h3 className="text-lg font-medium text-gray-900 mb-4">Centralized Conversation State & Audit Trail</h3>
+                      
+                      {/* Workflow Status Demo */}
+                      <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                        <div className="bg-blue-50 border border-blue-200 rounded-lg p-4">
+                          <h4 className="font-medium text-blue-900 mb-2">Current State</h4>
+                          <Badge variant="info" className="mb-2">pending</Badge>
+                          <p className="text-sm text-blue-700">Response awaiting review or approval</p>
+                        </div>
+                        
+                        <div className="bg-yellow-50 border border-yellow-200 rounded-lg p-4">
+                          <h4 className="font-medium text-yellow-900 mb-2">Workflow Flags</h4>
+                          <div className="space-y-1">
+                            <Badge variant="warning" size="sm">Clinical Review</Badge>
+                            <Badge variant="default" size="sm">3 Edits</Badge>
+                          </div>
+                          <p className="text-sm text-yellow-700 mt-2">Active workflow monitoring</p>
+                        </div>
+                        
+                        <div className="bg-green-50 border border-green-200 rounded-lg p-4">
+                          <h4 className="font-medium text-green-900 mb-2">Audit Trail</h4>
+                          <div className="text-sm text-green-700">
+                            <p>✓ Edit reasons tracked</p>
+                            <p>✓ User actions logged</p>
+                            <p>✓ Compliance ready</p>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Simulated Edit History */}
+                      <div className="bg-gray-50 rounded-lg p-4 mb-4">
+                        <h4 className="font-medium text-gray-900 mb-3">Sample Edit History</h4>
+                        <div className="space-y-2">
+                          <div className="bg-white rounded-lg p-3 text-sm border">
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant="info" size="sm">content-correction</Badge>
+                              <Caption variant="muted">2 minutes ago</Caption>
+                            </div>
+                            <Caption className="text-gray-600">Corrected medical terminology for accuracy</Caption>
+                            <Caption variant="muted">User: clinician_01 • Content: 245 chars</Caption>
+                          </div>
+                          
+                          <div className="bg-white rounded-lg p-3 text-sm border">
+                            <div className="flex items-center justify-between mb-2">
+                              <Badge variant="default" size="sm">tone-adjustment</Badge>
+                              <Caption variant="muted">15 minutes ago</Caption>
+                            </div>
+                            <Caption className="text-gray-600">Made response more empathetic</Caption>
+                            <Caption variant="muted">User: support_02 • Content: 198 chars</Caption>
+                          </div>
+                        </div>
+                      </div>
+
+                      {/* Workflow Validation Demo */}
+                      <div className="border border-orange-200 bg-orange-50 rounded-lg p-4">
+                        <h4 className="font-medium text-orange-900 mb-2">Workflow Validation</h4>
+                        <div className="text-sm space-y-1">
+                          <p className="text-orange-700">
+                            <strong>Validation Check:</strong> Clinical case requires clinician approval before resolution
+                          </p>
+                          <p className="text-orange-700">
+                            <strong>Auto-Escalation:</strong> 3+ edits trigger supervisor notification
+                          </p>
+                          <p className="text-orange-700">
+                            <strong>Compliance:</strong> All edit reasons documented for audit trail
+                          </p>
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Phase 6 Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• <strong>Centralized State Management:</strong> ConversationStateProvider for unified state</li>
+                      <li>• <strong>Workflow State Tracking:</strong> Transition validation and business rule enforcement</li>
+                      <li>• <strong>Comprehensive Audit Trail:</strong> Complete edit history with reasons and timestamps</li>
+                      <li>• <strong>Auto-Escalation Logic:</strong> Automatic escalation based on edit count and case priority</li>
+                      <li>• <strong>Clinical Safety Checks:</strong> Required clinical review for medical cases</li>
+                      <li>• <strong>Compliance Ready:</strong> Audit trail export and compliance reporting</li>
+                      <li>• <strong>State Persistence:</strong> Conversation state saved to localStorage</li>
+                      <li>• <strong>Role-Based Validation:</strong> Workflow transitions based on user permissions</li>
+                      <li>• <strong>Real-time Status Indicators:</strong> Visual workflow status in case header</li>
+                      <li>• <strong>Edit Pattern Analysis:</strong> Risk factor detection and warnings</li>
                     </ul>
                   </div>
                 </div>
