@@ -1,55 +1,51 @@
 # MediReply Visual Polish Implementation Plan
 
 ## Overview
-Transform the MediReply healthcare communication platform to reduce visual clutter, enhance clinical workflows, and create a focus-driven interface that prioritizes patient safety and efficiency. This plan integrates with the established three-column dashboard layout (Queue | Active Case | Patient Context) while maintaining healthcare-specific design principles and accessibility standards.
+Transform the MediReply communication platform to reduce visual clutter, enhance workflows, and create a focus-driven interface that prioritizes efficiency. This plan integrates with the established three-column dashboard layout (Queue | Active Case | Patient Context) while maintaining modern design principles and accessibility standards.
 
 ### Core Layout Foundation
 **Three-Column Dashboard Structure** (from TO-DO-PLAN.md):
 - **Left Panel**: Support Requests Queue with search, filters, and case triage
 - **Center Panel**: Active Case with AI interaction and conversation thread  
-- **Right Panel**: Patient Context with demographics and medical history
+- **Right Panel**: Customer Context with demographics and chat history
 
-### Healthcare Design Drivers
-**Clinical Safety First**: Clear confidence indicators, human approval workflows, and HIPAA-compliant UI patterns
-**Professional Medical Aesthetic**: Clean, clinical SaaS design with neutral palette and high legibility
+### Design Drivers
+**Professional Aesthetic**: Clean, clinical SaaS design with neutral palette and high legibility
 **Atomic Design System**: Radix UI components in atoms, strict component hierarchy adherence
 
 ---
 
-## Phase 1: Healthcare-Focused Foundation & Visual System (Priority: High)
+## Phase 1: Foundation & Visual System (Priority: High)
 **Estimated Time: 2-3 days**
 **Aligns with**: TO-DO-PLAN.md Phase 1 (Foundation & Types) + agent-product-designer.md principles
 
-### 1.1 Medical Design Token System
-- [ ] **Healthcare Color Palette** (`tailwind.config.js`)
-  - Clinical neutrals (whites, light grays) for primary surfaces
-  - Medical semantic colors: critical (red), urgent (amber), routine (blue), success (green)
+### 1.1 Design Token System
+- [ ] **Color Palette** (`tailwind.config.js`)
+  - Neutrals (whites, light grays) for primary surfaces
+  - Semantic colors: critical (red), urgent (amber), routine (blue), success (green)
   - Confidence indicators with low-saturation, accessible tones
 - [ ] **Medical Typography Hierarchy** 
-  - Clear hierarchy optimized for clinical environments
-  - High legibility fonts suitable for medical professionals
-  - Reading length optimization for patient information (60-80 characters)
-  - Emergency/critical information typography treatment
+  - Clear hierarchy
+  - High legibility sans screen fonts suitable for professionals
+  - Reading length optimization for customer information (60-80 characters)
 - [ ] **Healthcare Spacing System**
   - 8px baseline grid for consistent clinical interface
-  - Breathing room around critical information and AI confidence scores
+  - Breathing room around elements
 
-### 1.2 Healthcare Atomic Component Enhancement
+### 1.2 Atomic Component Enhancement
 - [ ] **Medical Button System** (`src/components/atoms/Button.tsx`)
-  - Healthcare action variants: approve, escalate, reject (from TO-DO-PLAN.md)
-  - Clinical safety confirmations for high-risk actions
-  - Keyboard shortcuts for efficient clinical workflows
+  - Action variants: approve, escalate, reject (from TO-DO-PLAN.md)
   - Loading states for AI processing indicators
-- [ ] **Clinical Badge System** (`src/components/atoms/Badge.tsx`)
-  - Medical priority variants: critical, urgent, routine (from existing components)
+- [ ] **Badge System** (`src/components/atoms/Badge.tsx`)
+  - Priority variants: critical, urgent, routine (from existing components)
   - AI confidence indicators with subtle, professional styling
-  - Patient status and case priority badges
-  - Tooltip integration for clinical reasoning display
-- [ ] **Healthcare Indicators** (`src/components/atoms/`)
-  - `ConfidenceScore.tsx`: AI confidence with clinical reasoning tooltips
-  - `PriorityTag.tsx`: Medical priority display with appropriate urgency colors
+  - Customer status and case priority badges
+  - Tooltip integration for reasoning display
+- [ ] **Indicators** (`src/components/atoms/`)
+  - `ConfidenceScore.tsx`: AI confidence with reasoning tooltips
+  - `PriorityTag.tsx`: Priority display with appropriate urgency colors
   - `StatusIndicator.tsx`: Case status badges for workflow tracking
-  - Standardized medical icon system (16/20px, professional styling)
+  - Don´t use emojis use the defined icon set
 
 ---
 
@@ -67,58 +63,44 @@ Transform the MediReply healthcare communication platform to reduce visual clutt
   - Autosave functionality to prevent loss of clinical edits
   - Empty-state validation to prevent accidental blank responses
 
-### 2.2 Clinical Workflow Streamlining
-- [ ] **Medical Input Consolidation** (`src/components/molecules/MessageComposer.tsx`)
-  - Single composer interface for healthcare communication
+### 2.2 Workflow Streamlining
+- [ ] **Input Consolidation** (`src/components/molecules/MessageComposer.tsx`)
+  - Single composer interface for communication
   - AI suggestion integration with confidence indicators
-  - Send/Save draft controls with clinical approval workflows
-  - Eliminate redundant medical note/preview boxes
-  - Optional collapsible "clinical notes" for internal documentation
+  - Send/Save draft controls with approval workflows
+  - Eliminate redundant note/preview boxes
+  - Optional collapsible "notes" for internal documentation
 - [ ] **Case Header Integration** (`src/components/organisms/ActiveCasePanel.tsx`)
-  - Patient summary with medical priority indicators
+  - Customer summary with priority indicators
   - Case status tracking (new, in-progress, awaiting-approval, resolved, escalated)
-  - Batch Mode toggle for handling multiple patient inquiries
-  - Real-time updates for clinical team coordination
-
-### 2.3 Healthcare Action Workflow
-- [ ] **Clinical Actions** (`src/components/organisms/ActiveCasePanel.tsx`)
-  - Approve/Send with medical safety confirmations (Cmd/Ctrl+Enter)
-  - Request Clinical Review (E key) for quality assurance
-  - Escalate to Clinical Team (X key) for complex cases
-  - Next/Previous Patient Conversation (J/K keys) for queue management
-- [ ] **Medical Safety Confirmations**
-  - High-risk case confirmations with clinical reasoning requirement
-  - Success notifications for completed patient interactions
-  - 5-second undo option for non-critical actions
-  - Audit trail for regulatory compliance
+  - Real-time updates for team coordination
 
 ### 2.4 Patient Information Minimization
-- [ ] **Essential Clinical Data** (`src/components/molecules/CaseListItem.tsx`)
-  - Patient name and last interaction time prominently displayed
-  - Medical priority and urgency indicators visible
-  - Advanced patient details in collapsible "Medical History" section
-  - Remove verbose metadata that doesn't support clinical decision-making
+- [ ] **Essential Data** (`src/components/molecules/CaseListItem.tsx`)
+  - Customer name and last interaction time prominently displayed
+  - Priority and urgency indicators visible
+  - Advanced customer details in collapsible "History" section
+  - Remove verbose metadata that doesn't support decision-making
 
 ---
 
-## Phase 3: Medical Metrics & Analytics Integration (Priority: High)
+## Phase 3: Metrics & Analytics Integration (Priority: High)
 **Estimated Time: 2-3 days**
 **Aligns with**: TO-DO-PLAN.md Navigation Structure + clinical performance monitoring
 
 ### 3.1 Clinical Dashboard Metrics Separation
-- [ ] **Clean Medical Panels** (`src/components/organisms/SupportRequestsQueue.tsx`)
-  - Remove operational charts from patient queue view to maintain focus
-  - Remove KPIs from conversation panels that distract from patient care
-  - Keep minimal "View Clinical Metrics" link in navigation header
-  - Preserve clinical indicators (urgency, priority) that support patient safety
+- [ ] **Clean Panels** (`src/components/organisms/SupportRequestsQueue.tsx`)
+  - Remove operational charts from customer queue view to maintain focus
+  - Remove KPIs from conversation panels that distract from customer support
+  - Keep minimal "View Metrics" link in navigation header
 
-### 3.2 Healthcare Analytics Dashboard
-- [ ] **Medical Metrics Page** (`src/components/pages/MetricsPage.tsx`)
-  - Clinical approval rate tracking for quality assurance
+### 3.2 Analytics Dashboard
+- [ ] **Metrics Page** (`src/components/pages/MetricsPage.tsx`)
+  - Approval rate tracking for quality assurance
   - Escalation rate monitoring for workflow optimization
   - Average edits per AI draft for continuous improvement
-  - Patient queue statistics for workload management
-  - Response time analytics for patient satisfaction
+  - Queue statistics for workload management
+  - Response time analytics for customer satisfaction
 - [ ] **Navigation Integration** (`src/components/organisms/TopNavigation.tsx`)
   - Integrate "Metrics" into top navigation (Dashboard, Knowledge Gaps, Metrics, Live)
   - Maintain contextual access without competing with patient care tasks
