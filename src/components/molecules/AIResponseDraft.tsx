@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Button, ConfidenceScore, Badge } from '../atoms';
+import { Button, ConfidenceScore, Badge, SmallText, Caption, Text } from '../atoms';
 import type { AIResponse } from '../../types';
 
 interface AIResponseDraftProps {
@@ -72,7 +72,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
             <svg className="w-5 h-5 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
               <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
             </svg>
-            <span className="font-medium text-purple-700">AI Response Draft</span>
+            <SmallText weight="medium" variant="primary">AI Response Draft</SmallText>
           </div>
           
           <ConfidenceScore 
@@ -91,9 +91,9 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
           )}
         </div>
 
-        <div className="text-xs text-gray-500">
+        <Caption variant="muted">
           Generated {new Date(aiResponse.generatedAt).toLocaleTimeString()}
-        </div>
+        </Caption>
       </div>
 
       {/* Content */}
@@ -130,13 +130,13 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
             className="bg-white p-3 rounded-lg border border-purple-100 cursor-pointer hover:border-purple-200 transition-colors"
             onClick={() => !isLoading && setIsEditing(true)}
           >
-            <p className="text-gray-800 whitespace-pre-wrap leading-relaxed">
+            <SmallText className="whitespace-pre-wrap leading-relaxed">
               {editedContent}
-            </p>
+            </SmallText>
             {!isLoading && (
-              <div className="mt-2 text-xs text-purple-600 opacity-60">
+              <Caption variant="primary" className="mt-2 opacity-60">
                 Click to edit
-              </div>
+              </Caption>
             )}
           </div>
         )}
@@ -147,7 +147,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         <div className="mb-4">
           <button
             onClick={() => setShowReasoning(!showReasoning)}
-            className="flex items-center space-x-2 text-sm font-medium text-purple-700 hover:text-purple-800 transition-colors"
+            className="flex items-center space-x-2 hover:text-purple-800 transition-colors"
           >
             <svg 
               className={`w-4 h-4 transform transition-transform ${showReasoning ? 'rotate-90' : ''}`}
@@ -157,14 +157,14 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
             >
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
             </svg>
-            <span>Clinical Reasoning</span>
+            <SmallText weight="medium" variant="primary">Clinical Reasoning</SmallText>
           </button>
           
           {showReasoning && (
             <div className="mt-2 p-3 bg-white rounded-lg border border-purple-100">
-              <p className="text-sm text-gray-700 leading-relaxed">
+              <SmallText className="leading-relaxed">
                 {aiResponse.clinicalReasoning}
-              </p>
+              </SmallText>
             </div>
           )}
         </div>
@@ -173,7 +173,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
       {/* Risk Assessment */}
       {aiResponse.riskAssessment.factors.length > 0 && (
         <div className="mb-4">
-          <div className="text-sm font-medium text-gray-700 mb-2">Risk Factors:</div>
+          <SmallText weight="medium" className="mb-2">Risk Factors:</SmallText>
           <div className="space-y-1">
             {aiResponse.riskAssessment.factors.map((factor, index) => (
               <div key={index} className="flex items-center space-x-2">
@@ -181,7 +181,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                   aiResponse.riskAssessment.level === 'high' ? 'bg-red-400' :
                   aiResponse.riskAssessment.level === 'medium' ? 'bg-yellow-400' : 'bg-green-400'
                 }`}></div>
-                <span className="text-xs text-gray-600">{factor}</span>
+                <Caption>{factor}</Caption>
               </div>
             ))}
           </div>
@@ -191,14 +191,14 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
       {/* Suggested Actions */}
       {aiResponse.suggestedActions.length > 0 && (
         <div className="mb-4">
-          <div className="text-sm font-medium text-gray-700 mb-2">Suggested Actions:</div>
+          <SmallText weight="medium" className="mb-2">Suggested Actions:</SmallText>
           <div className="space-y-1">
             {aiResponse.suggestedActions.map((action, index) => (
               <div key={index} className="flex items-start space-x-2">
                 <svg className="w-3 h-3 mt-1 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                   <path fillRule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clipRule="evenodd" />
                 </svg>
-                <span className="text-xs text-gray-600">{action}</span>
+                <Caption>{action}</Caption>
               </div>
             ))}
           </div>
@@ -210,7 +210,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         <div className="flex items-center justify-between pt-3 border-t border-purple-200">
           <div className="flex space-x-2">
             <Button
-              variant="approve"
+              variant="primary"
               size="sm"
               onClick={handleApprove}
               disabled={isLoading}
@@ -235,7 +235,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
           </div>
 
           <Button
-            variant="reject"
+            variant="danger"
             size="sm"
             onClick={() => setShowRejectModal(true)}
             disabled={isLoading}
@@ -252,12 +252,12 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
       {showRejectModal && (
         <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
           <div className="bg-white rounded-lg p-6 w-full max-w-md">
-            <h3 className="text-lg font-medium text-gray-900 mb-4">
+            <Text size="lg" weight="medium" className="mb-4">
               Reject AI Response
-            </h3>
-            <p className="text-sm text-gray-600 mb-4">
+            </Text>
+            <SmallText variant="muted" className="mb-4">
               Please provide a reason for rejecting this AI-generated response. This helps improve future suggestions.
-            </p>
+            </SmallText>
             <textarea
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
@@ -277,7 +277,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                 Cancel
               </Button>
               <Button
-                variant="reject"
+                variant="danger"
                 size="sm"
                 onClick={handleReject}
                 disabled={!rejectReason.trim()}

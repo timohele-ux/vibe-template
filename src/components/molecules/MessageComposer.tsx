@@ -1,5 +1,5 @@
 import React, { useState, useRef, useEffect } from 'react';
-import { Button, Input, Spinner, Tooltip } from '../atoms';
+import { Button, Input, Spinner, Tooltip, SmallText, Caption } from '../atoms';
 import type { AIResponse } from '../../types';
 
 interface MessageComposerProps {
@@ -92,13 +92,13 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
               <svg className="w-4 h-4 text-purple-500" fill="currentColor" viewBox="0 0 20 20">
                 <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
               </svg>
-              <span className="text-sm font-medium text-purple-700">AI Suggestion</span>
+              <SmallText weight="medium" variant="primary">AI Suggestion</SmallText>
               <div className="flex items-center space-x-1">
                 <div className={`w-2 h-2 rounded-full ${
                   aiSuggestion.confidence === 'high' ? 'bg-green-500' :
                   aiSuggestion.confidence === 'medium' ? 'bg-yellow-500' : 'bg-red-500'
                 }`}></div>
-                <span className="text-xs text-gray-600">{aiSuggestion.confidenceScore}%</span>
+                <Caption>{aiSuggestion.confidenceScore}%</Caption>
               </div>
             </div>
             <button
@@ -112,16 +112,16 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
           </div>
           
           <div className="bg-white rounded-lg p-3 mb-3">
-            <p className="text-sm text-gray-800 whitespace-pre-wrap">{aiSuggestion.content}</p>
+            <SmallText className="whitespace-pre-wrap">{aiSuggestion.content}</SmallText>
           </div>
 
           {aiSuggestion.clinicalReasoning && (
             <details className="mb-3">
-              <summary className="text-sm text-purple-700 cursor-pointer hover:text-purple-800 font-medium">
-                Clinical Reasoning
+              <summary className="cursor-pointer hover:text-purple-800">
+                <SmallText weight="medium" variant="primary">Clinical Reasoning</SmallText>
               </summary>
-              <div className="mt-2 p-2 bg-white rounded text-xs text-gray-600">
-                {aiSuggestion.clinicalReasoning}
+              <div className="mt-2 p-2 bg-white rounded">
+                <Caption>{aiSuggestion.clinicalReasoning}</Caption>
               </div>
             </details>
           )}
@@ -160,8 +160,10 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
           />
           
           {/* Character count */}
-          <div className="absolute bottom-2 right-2 text-xs text-gray-400">
-            {content.length}
+          <div className="absolute bottom-2 right-2">
+            <Caption variant="muted">
+              {content.length}
+            </Caption>
           </div>
         </div>
 
@@ -204,9 +206,9 @@ const MessageComposer: React.FC<MessageComposerProps> = ({
             </Tooltip>
 
             {/* Formatting hint */}
-            <span className="text-xs text-gray-400">
+            <Caption variant="muted">
               Ctrl+Enter to send
-            </span>
+            </Caption>
           </div>
 
           <div className="flex items-center space-x-2">

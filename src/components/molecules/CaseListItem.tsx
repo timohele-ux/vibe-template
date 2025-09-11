@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, Badge, PriorityTag, StatusIndicator, Heading4, BodyText, SmallText, Caption } from '../atoms';
+import { Avatar, Badge, PriorityTag, StatusIndicator, Text, BodyText, SmallText, Caption } from '../atoms';
 import { Card } from '../molecules';
 import type { Case } from '../../types';
 
@@ -66,22 +66,27 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
           {/* Header Row */}
           <div className="flex items-center justify-between mb-2">
             <div className="flex items-center space-x-2 min-w-0">
-              <Heading4 className={`text-gray-900 truncate ${isUnread ? 'font-semibold' : ''}`}>
+              <Text 
+                size="lg" 
+                weight={isUnread ? 'semibold' : 'medium'} 
+                as="h4" 
+                className="truncate"
+              >
                 {caseData.patient.firstName} {caseData.patient.lastName}
-              </Heading4>
+              </Text>
               {getUnreadCount() > 0 && (
                 <Badge variant="info" size="sm">
                   {getUnreadCount()}
                 </Badge>
               )}
             </div>
-            <Caption className="text-gray-500 whitespace-nowrap ml-2">
+            <Caption variant="muted" className="whitespace-nowrap ml-2">
               {getTimeAgo(caseData.updatedAt)}
             </Caption>
           </div>
 
           {/* Subject */}
-          <BodyText className={`text-gray-700 mb-2 truncate ${isUnread ? 'font-medium' : ''}`}>
+          <BodyText weight={isUnread ? 'medium' : 'normal'} className="mb-2 truncate">
             {caseData.subject}
           </BodyText>
 
@@ -102,7 +107,7 @@ const CaseListItem: React.FC<CaseListItemProps> = ({
                 <svg className="w-3 h-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                   <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
                 </svg>
-                <Caption className="text-gray-400">{caseData.estimatedResponseTime}m</Caption>
+                <Caption variant="muted">{caseData.estimatedResponseTime}m</Caption>
               </div>
             )}
           </div>

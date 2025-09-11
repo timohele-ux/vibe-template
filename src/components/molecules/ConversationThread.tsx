@@ -1,5 +1,5 @@
 import React from 'react';
-import { Avatar, ConfidenceScore } from '../atoms';
+import { Avatar, ConfidenceScore, BodyText, SmallText, Caption } from '../atoms';
 import type { Message, AIResponse } from '../../types';
 
 interface ConversationThreadProps {
@@ -92,7 +92,7 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
           </div>
-          <p className="text-gray-500">No conversation history yet</p>
+          <BodyText variant="muted">No conversation history yet</BodyText>
         </div>
       ) : (
         allItems.map((item, index) => {
@@ -105,9 +105,9 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
               {showDateSeparator && (
                 <div className="flex items-center justify-center py-2">
                   <div className="bg-gray-100 px-3 py-1 rounded-full">
-                    <span className="text-xs text-gray-500 font-medium">
+                    <Caption variant="muted" weight="medium">
                       {formatDate(new Date(item.timestamp))}
-                    </span>
+                    </Caption>
                   </div>
                 </div>
               )}
@@ -128,14 +128,14 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
                   <div className={`flex flex-col ${item.senderType === 'patient' ? 'items-start' : 'items-end'}`}>
                     {/* Sender Info */}
                     <div className={`flex items-center space-x-2 mb-1 ${item.senderType === 'patient' ? 'flex-row' : 'flex-row-reverse space-x-reverse'}`}>
-                      <span className="text-xs font-medium text-gray-600">
+                      <Caption weight="medium">
                         {item.senderName}
-                      </span>
-                      <span className="text-xs text-gray-400">
+                      </Caption>
+                      <Caption variant="muted">
                         {formatTime(new Date(item.timestamp))}
-                      </span>
+                      </Caption>
                       {item.type === 'message' && getSentimentIcon(item.sentiment) && (
-                        <span className="text-xs">{getSentimentIcon(item.sentiment)}</span>
+                        <Caption>{getSentimentIcon(item.sentiment)}</Caption>
                       )}
                     </div>
 
@@ -152,7 +152,7 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
                         ${item.type === 'message' && !item.isRead ? 'ring-2 ring-blue-400 ring-opacity-50' : ''}
                       `}
                     >
-                      <p className="text-sm whitespace-pre-wrap">{item.content}</p>
+                      <SmallText className="whitespace-pre-wrap">{item.content}</SmallText>
 
                       {/* AI Response Confidence Score */}
                       {item.type === 'aiResponse' && (
@@ -182,11 +182,11 @@ const ConversationThread: React.FC<ConversationThreadProps> = ({
                       )}
 
                       {item.type === 'aiResponse' && (
-                        <div className="flex items-center space-x-1 text-xs text-purple-600">
-                          <svg className="w-3 h-3" fill="currentColor" viewBox="0 0 20 20">
+                        <div className="flex items-center space-x-1">
+                          <svg className="w-3 h-3 text-purple-600" fill="currentColor" viewBox="0 0 20 20">
                             <path fillRule="evenodd" d="M11.3 1.046A1 1 0 0112 2v5h4a1 1 0 01.82 1.573l-7 10A1 1 0 018 18v-5H4a1 1 0 01-.82-1.573l7-10a1 1 0 011.12-.38z" clipRule="evenodd" />
                           </svg>
-                          <span>AI Generated</span>
+                          <Caption variant="primary">AI Generated</Caption>
                         </div>
                       )}
                     </div>

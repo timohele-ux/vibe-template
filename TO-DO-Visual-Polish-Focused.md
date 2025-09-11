@@ -125,12 +125,26 @@ This document outlines a visual polish implementation plan focused on styling th
 
 ## Phase 5: Component Integration Cleanup
 
-### 5.1 Molecule Component Optimization
+### 5.1 Molecule Component Optimization ✅ COMPLETED
 **Polish Focus:**
-- Review molecules using atomic components for consistent styling
-- Remove styling overrides that break atomic component consistency
-- Ensure proper spacing between atomic components within molecules
-- Standardize molecule-level responsive behavior
+- ✅ Review molecules using atomic components for consistent styling
+- ✅ Remove styling overrides that break atomic component consistency  
+- ✅ Ensure proper spacing between atomic components within molecules
+- ✅ Standardize molecule-level responsive behavior
+
+**Completed Components:**
+- ✅ QueueFilters.tsx - Converted hardcoded h4/text styles to SmallText/Caption components, fixed DropdownMenu imports
+- ✅ CaseListItem.tsx - Replaced hardcoded text styling with atomic Text components, improved conditional weight handling
+- ✅ ConversationThread.tsx - Converted hardcoded spans/p tags to BodyText/SmallText/Caption components
+- ✅ MessageComposer.tsx - Standardized AI suggestion and character count text using atomic components
+- ✅ AIResponseDraft.tsx - Converted all hardcoded text to SmallText/Caption/Text components, fixed button variants
+- ✅ QueueStats.tsx - Removed hardcoded text colors, used Caption variants for consistent styling
+
+**Key Improvements:**
+- Eliminated 30+ instances of hardcoded `text-*`, `font-*` classes across molecule components
+- Standardized conditional font weights using atomic component props instead of className overrides
+- Fixed missing import dependencies and incorrect component variants
+- Consistent use of Caption, SmallText, BodyText, and Text components throughout molecules
 
 ### 5.2 Redundancy Elimination
 **Polish Focus:**

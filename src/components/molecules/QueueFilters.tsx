@@ -1,7 +1,7 @@
-import React from 'react';
-import { Button, Select, Badge } from '../atoms';
+import React, { useState } from 'react';
+import { Button, SmallText, Caption, Badge } from '../atoms';
 import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
-import type { QueueFilters, Priority, CaseStatus } from '../../types';
+import type { Case, Priority, CaseStatus, QueueFilters } from '../../types';
 
 interface QueueFiltersProps {
   filters: QueueFilters;
@@ -126,7 +126,7 @@ const QueueFiltersComponent: React.FC<QueueFiltersProps> = ({
           >
             {/* Priority Filters */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Priority</h4>
+              <SmallText weight="medium" className="text-gray-900 mb-2">Priority</SmallText>
               <div className="flex flex-wrap gap-2">
                 {priorityOptions.map(option => (
                   <button
@@ -148,7 +148,7 @@ const QueueFiltersComponent: React.FC<QueueFiltersProps> = ({
 
             {/* Status Filters */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Status</h4>
+              <SmallText weight="medium" className="text-gray-900 mb-2">Status</SmallText>
               <div className="flex flex-wrap gap-2">
                 {statusOptions.map(option => (
                   <button
@@ -170,7 +170,7 @@ const QueueFiltersComponent: React.FC<QueueFiltersProps> = ({
 
             {/* Department Filters */}
             <div className="mb-4">
-              <h4 className="text-sm font-medium text-gray-900 mb-2">Department</h4>
+              <SmallText weight="medium" className="text-gray-900 mb-2">Department</SmallText>
               <div className="flex flex-wrap gap-2">
                 {departmentOptions.map(option => (
                   <button
@@ -200,9 +200,9 @@ const QueueFiltersComponent: React.FC<QueueFiltersProps> = ({
               >
                 Clear All
               </Button>
-              <div className="text-xs text-gray-500">
+              <Caption variant="muted">
                 {activeFilterCount > 0 && `${activeFilterCount} filters active`}
-              </div>
+              </Caption>
             </div>
           </DropdownMenu.Content>
         </DropdownMenu.Portal>
@@ -211,15 +211,15 @@ const QueueFiltersComponent: React.FC<QueueFiltersProps> = ({
       {/* Active Filters Display */}
       {activeFilterCount > 0 && (
         <div className="flex items-center space-x-2">
-          <span className="text-xs text-gray-500">Active:</span>
-          <span className="text-xs text-blue-600">{getActiveFiltersText()}</span>
+          <Caption variant="muted">Active:</Caption>
+          <Caption variant="primary">{getActiveFiltersText()}</Caption>
         </div>
       )}
 
       {/* Sort Options */}
       <div className="ml-auto flex items-center space-x-2">
-        <span className="text-xs text-gray-500">Sort by:</span>
-        <select className="text-xs border-none bg-transparent text-gray-600 focus:outline-none">
+        <Caption variant="muted">Sort by:</Caption>
+        <select className="text-xs text-gray-600 bg-transparent border-none focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2 rounded px-1 py-0.5 transition-all duration-200">
           <option value="updated">Most Recent</option>
           <option value="priority">Priority</option>
           <option value="patient">Patient Name</option>

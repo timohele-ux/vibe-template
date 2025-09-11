@@ -91,7 +91,7 @@ const QueueStats: React.FC<QueueStatsProps> = ({
                     {stat.value}
                   </Heading3>
                   {stat.urgent && (
-                    <Caption className="text-red-500">!</Caption>
+                    <Caption variant="danger">!</Caption>
                   )}
                 </div>
                 <Caption className="opacity-75">{stat.label}</Caption>
@@ -109,13 +109,19 @@ const QueueStats: React.FC<QueueStatsProps> = ({
       {/* Quick Actions */}
       <div className="mt-3 flex items-center justify-between">
         <div className="flex items-center space-x-4">
-          <Caption className="text-gray-500">AI Approval Rate: <strong className="text-green-600">{Math.round(metrics.aiApprovalRate)}%</strong></Caption>
-          <Caption className="text-gray-500">Escalation Rate: <strong className="text-red-600">{Math.round(metrics.escalationRate)}%</strong></Caption>
+          <div className="flex items-center space-x-1">
+            <Caption variant="muted">AI Approval Rate:</Caption>
+            <Caption variant="success" weight="medium">{Math.round(metrics.aiApprovalRate)}%</Caption>
+          </div>
+          <div className="flex items-center space-x-1">
+            <Caption variant="muted">Escalation Rate:</Caption>
+            <Caption variant="danger" weight="medium">{Math.round(metrics.escalationRate)}%</Caption>
+          </div>
         </div>
         
         <div className="flex items-center space-x-1">
           <div className="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-          <Caption className="text-gray-500">Live updates</Caption>
+          <Caption variant="muted">Live updates</Caption>
         </div>
       </div>
     </div>
