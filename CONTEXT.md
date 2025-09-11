@@ -8,7 +8,7 @@
 # MediReply Product Rationale
 
 ## This is why this product is being done
-- Healthcare organizations face rising digital inquiries, staff burnout, and inconsistent patient communication. Problem is that current systems (ticketing/chat) are generic and not healthcare-native. MediReply addresses these gaps with agentic AI and Human-in-the-Loop oversight to ensure safe, scalable patient and also working well for ordinary customer support like e.g. wayfinding issues.
+- Organizations face rising digital inquiries, staff burnout, and inconsistent patient communication. Problem is that current systems (ticketing/chat) are generic and not healthcare-native. MediReply addresses these gaps with agentic AI and Human-in-the-Loop oversight to ensure safe, scalable patient and also working well for ordinary customer support like e.g. wayfinding issues.
 
 ## Purpose & User Problem
 - Purpose: Automate daily mundane customer support and streamline patient communication while maintaining clinical safety and compliance with adding human in the loop.
