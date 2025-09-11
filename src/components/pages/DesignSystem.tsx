@@ -16,7 +16,7 @@ import {
   Toggle,
   Tooltip
 } from '../atoms';
-import { Card, FormField, PatientMessageCard } from '../molecules';
+import { Card, FormField, PatientMessageCard, AIResponseDraft } from '../molecules';
 import { Form, Header } from '../organisms';
 
 const DesignSystem: React.FC = () => {
@@ -36,12 +36,13 @@ const DesignSystem: React.FC = () => {
 
   // Mock data for PatientMessageCard
   const mockPatient = {
-    id: 'patient-1',
+    id: 'patient-001',
     firstName: 'Sarah',
     lastName: 'Johnson',
     dateOfBirth: '1985-03-15',
     email: 'sarah.johnson@email.com',
-    phone: '+1-555-0123',
+    phone: '+1 (555) 123-4567',
+    preferredLanguage: 'English',
     communicationPreferences: {
       email: true,
       sms: false,
@@ -49,22 +50,47 @@ const DesignSystem: React.FC = () => {
       portal: true
     },
     medicalInfo: {
-      conditions: ['Diabetes Type 2'],
-      medications: ['Metformin'],
-      allergies: ['Penicillin']
+      conditions: ['Hypertension', 'Type 2 Diabetes'],
+      medications: ['Metformin', 'Lisinopril'],
+      allergies: ['Penicillin'],
+      lastVisit: '2024-01-15'
     },
     riskFlags: []
   };
 
   const mockMessage = {
-    id: 'msg-1',
-    content: 'Hi, I need to reschedule my appointment for next Tuesday. I have a work conflict that came up. Could we move it to Wednesday or Thursday instead? Thank you for your help.',
-    timestamp: new Date(),
+    id: 'msg-001',
+    content: "I have been experiencing some dizziness lately, especially when I stand up quickly. Should I be concerned about this? I am currently taking my medications as prescribed.",
+    timestamp: new Date('2024-01-20T10:30:00'),
     senderType: 'patient' as const,
-    senderId: 'patient-1',
+    senderId: 'patient-001',
     senderName: 'Sarah Johnson',
     isRead: true,
     sentiment: 'neutral' as const
+  };
+
+  // Mock data for AIResponseDraft
+  const mockAIResponse = {
+    id: 'ai-001',
+    caseId: 'case-001',
+    content: `Based on your symptoms of dizziness when standing, this could be related to orthostatic hypotension, which can be a side effect of blood pressure medications like Lisinopril. I recommend:
+
+1. Monitor your blood pressure regularly
+2. Rise slowly from sitting or lying positions
+3. Stay well hydrated
+4. Schedule a follow-up appointment to review your medications
+
+If symptoms worsen or you experience fainting, please contact us immediately.`,
+    confidence: 'high' as const,
+    confidenceScore: 87,
+    clinicalReasoning: 'Patient presents with orthostatic symptoms while on ACE inhibitor therapy. Symptoms are consistent with medication-related orthostatic hypotension.',
+    suggestedActions: ['Blood pressure monitoring', 'Medication review', 'Follow-up appointment'],
+    riskAssessment: {
+      level: 'medium' as const,
+      factors: ['Medication side effects', 'Fall risk']
+    },
+    generatedAt: new Date('2024-01-20T10:35:00'),
+    isApproved: false
   };
 
   const handleFormSubmit = (e: React.FormEvent) => {
@@ -110,9 +136,9 @@ const DesignSystem: React.FC = () => {
                 <div className="bg-white p-6 rounded-lg shadow-sm">
                   <div className="flex gap-4">
                     <Badge>Default</Badge>
-                    <Badge variant="secondary">Secondary</Badge>
-                    <Badge variant="destructive">Warning</Badge>
-                    <Badge variant="outline">Outline</Badge>
+                    <Badge variant="default">Secondary</Badge>
+                    <Badge variant="error">Warning</Badge>
+                    <Badge variant="info">Outline</Badge>
                   </div>
                 </div>
               </section>
@@ -124,10 +150,10 @@ const DesignSystem: React.FC = () => {
                   <div className="flex gap-4 flex-wrap">
                     <Button>Primary</Button>
                     <Button variant="secondary">Secondary</Button>
-                    <Button variant="destructive">Delete</Button>
+                    <Button variant="danger">Delete</Button>
                     <Button variant="outline">Outline</Button>
                     <Button variant="ghost">Ghost</Button>
-                    <Button variant="link">Link</Button>
+                    <Button variant="ghost">Link</Button>
                     <Button size="sm">Small</Button>
                     <Button size="lg">Large</Button>
                     <Button disabled>Disabled</Button>
@@ -143,7 +169,7 @@ const DesignSystem: React.FC = () => {
                     <Checkbox 
                       id="terms" 
                       checked={checkboxChecked}
-                      onCheckedChange={setCheckboxChecked}
+                      onCheckedChange={(checked) => setCheckboxChecked(checked === true)}
                     />
                     <Label htmlFor="terms">Accept terms and conditions</Label>
                   </div>
@@ -371,7 +397,7 @@ const DesignSystem: React.FC = () => {
                       </p>
                       <div className="flex gap-2">
                         <Badge>New</Badge>
-                        <Badge variant="secondary">Featured</Badge>
+                        <Badge variant="info">Featured</Badge>
                       </div>
                     </Card>
                   </div>
@@ -437,6 +463,33 @@ const DesignSystem: React.FC = () => {
                   </div>
                 </div>
               </section>
+
+              {/* AIResponseDraft */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">AIResponseDraft</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-3xl">
+                    <AIResponseDraft
+                      aiResponse={mockAIResponse}
+                      onApprove={(id, modifications) => console.log('Approved:', id, modifications)}
+                      onReject={(id, reason) => console.log('Rejected:', id, reason)}
+                      onEdit={(id, content, editReason, customReason) => console.log('Edited:', id, content, editReason, customReason)}
+                    />
+                  </div>
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Phase 2 Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• <strong>State Management:</strong> Pending → Editing → Resolved workflow</li>
+                      <li>• <strong>Edit Reason Tracking:</strong> Mandatory reason selection for audit compliance</li>
+                      <li>• <strong>Visual State Indicators:</strong> Color-coded backgrounds (gray/blue/green)</li>
+                      <li>• <strong>Keyboard Shortcuts:</strong> Ctrl+E (edit), Ctrl+Enter (approve), Esc (cancel)</li>
+                      <li>• <strong>Enhanced Validation:</strong> Required edit reasons and content validation</li>
+                      <li>• <strong>Audit Trail Ready:</strong> Captures edit reasons and custom explanations</li>
+                      <li>• <strong>Responsive Actions:</strong> Context-aware button states and tooltips</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
             </div>
           </Tabs.Content>
 
@@ -447,7 +500,7 @@ const DesignSystem: React.FC = () => {
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Header</h2>
                 <div className="bg-gray-100 p-6 rounded-lg">
-                  <Header />
+                  <Header title="Sample Header" subtitle="This is a sample header component" />
                 </div>
               </section>
 

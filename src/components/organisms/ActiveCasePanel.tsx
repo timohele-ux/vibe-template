@@ -8,14 +8,14 @@ import {
   BatchActions,
   PatientMessageCard
 } from '../molecules';
-import type { Case, AIResponse, Message } from '../../types';
+import type { Case, User, Message, AIResponse, EditReason } from '../../types';
 
 interface ActiveCasePanelProps {
   activeCase: Case | null;
   onSendMessage: (caseId: string, content: string, isDraft?: boolean) => void;
   onApproveAIResponse: (caseId: string, responseId: string, modifications?: string[]) => void;
   onRejectAIResponse: (caseId: string, responseId: string, reason: string) => void;
-  onEditAIResponse: (caseId: string, responseId: string, newContent: string) => void;
+  onEditAIResponse: (caseId: string, responseId: string, newContent: string, editReason: string, customReason?: string) => void;
   onRequestAISuggestion: (caseId: string) => void;
   onBatchAction: (caseId: string, action: string, responseIds: string[], reason?: string) => void;
   onUpdateCaseStatus: (caseId: string, status: Case['status']) => void;
@@ -355,7 +355,7 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                     aiResponse={response}
                     onApprove={(id, modifications) => onApproveAIResponse(activeCase.id, id, modifications)}
                     onReject={(id, reason) => onRejectAIResponse(activeCase.id, id, reason)}
-                    onEdit={(id, content) => onEditAIResponse(activeCase.id, id, content)}
+                    onEdit={(id, content, editReason, customReason) => onEditAIResponse(activeCase.id, id, content, editReason, customReason)}
                     isLoading={isLoading}
                     className={batchMode ? 'ml-8' : ''}
                   />

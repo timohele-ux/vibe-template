@@ -5,6 +5,8 @@ export type CaseStatus = 'new' | 'in-progress' | 'awaiting-approval' | 'resolved
 export type SenderType = 'patient' | 'staff' | 'ai' | 'system';
 export type ConfidenceLevel = 'high' | 'medium' | 'low';
 export type UserRole = 'admin' | 'clinician' | 'support' | 'viewer';
+export type ResponseMode = 'pending' | 'editing' | 'resolved';
+export type EditReason = 'content-correction' | 'tone-adjustment' | 'personal-information' | 'policy-clarification' | 'other';
 
 export interface Patient {
   id: string;
@@ -79,6 +81,26 @@ export interface AIResponse {
   approvedAt?: Date;
   isApproved: boolean;
   modifications?: string[];
+}
+
+export interface ResponseState {
+  mode: ResponseMode;
+  editReason?: EditReason;
+  customEditReason?: string;
+  isModified: boolean;
+  originalContent: string;
+  currentContent: string;
+}
+
+export interface EditRecord {
+  id: string;
+  timestamp: Date;
+  userId: string;
+  reason: EditReason;
+  customReason?: string;
+  originalContent: string;
+  modifiedContent: string;
+  conversationId: string;
 }
 
 export interface User {
