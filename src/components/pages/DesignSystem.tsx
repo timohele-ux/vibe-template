@@ -14,7 +14,8 @@ import {
   Tabs,
   Text,
   Toggle,
-  Tooltip
+  Tooltip,
+  ResponseStateIndicator
 } from '../atoms';
 import { Card, FormField, PatientMessageCard, AIResponseDraft } from '../molecules';
 import { Form, Header } from '../organisms';
@@ -354,6 +355,39 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                 </div>
               </section>
 
+              {/* ResponseStateIndicator */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">ResponseStateIndicator</h2>
+                <div className="bg-white p-6 rounded-lg shadow-sm">
+                  <div className="space-y-4">
+                    <div className="flex gap-4 items-center">
+                      <ResponseStateIndicator state="pending" showLabel={true} />
+                      <ResponseStateIndicator state="editing" showLabel={true} />
+                      <ResponseStateIndicator state="resolved" showLabel={true} />
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <ResponseStateIndicator state="pending" size="sm" />
+                      <ResponseStateIndicator state="editing" size="md" />
+                      <ResponseStateIndicator state="resolved" size="lg" />
+                    </div>
+                    <div className="flex gap-4 items-center">
+                      <ResponseStateIndicator state="pending" animated={false} />
+                      <ResponseStateIndicator state="editing" animated={true} />
+                      <ResponseStateIndicator state="resolved" animated={true} />
+                    </div>
+                  </div>
+                  <div className="mt-4 p-4 bg-gray-50 rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Phase 3 Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• <strong>State-Specific Icons:</strong> Clock (pending), edit (editing), checkmark (resolved)</li>
+                      <li>• <strong>Animated Indicators:</strong> Pulsing dot for editing, bounce for resolved</li>
+                      <li>• <strong>Size Variants:</strong> Small, medium, large for different contexts</li>
+                      <li>• <strong>Visual Hierarchy:</strong> Color-coded dots and icons for instant recognition</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
               {/* Tooltip */}
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">Tooltip</h2>
@@ -477,15 +511,16 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                     />
                   </div>
                   <div className="mt-4 p-4 bg-white rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Phase 2 Features:</h3>
+                    <h3 className="text-lg font-medium mb-2">Phase 2 & 3 Features:</h3>
                     <ul className="text-sm text-gray-600 space-y-1">
                       <li>• <strong>State Management:</strong> Pending → Editing → Resolved workflow</li>
                       <li>• <strong>Edit Reason Tracking:</strong> Mandatory reason selection for audit compliance</li>
-                      <li>• <strong>Visual State Indicators:</strong> Color-coded backgrounds (gray/blue/green)</li>
+                      <li>• <strong>Visual State System:</strong> Color-coded backgrounds with state glow effects</li>
+                      <li>• <strong>State Animations:</strong> Fade-in, slide-in, and bounce transitions</li>
+                      <li>• <strong>Response State Indicators:</strong> Animated dots with state-specific icons</li>
+                      <li>• <strong>Enhanced Visual Feedback:</strong> Pulse effects, glow states, and smooth transitions</li>
                       <li>• <strong>Keyboard Shortcuts:</strong> Ctrl+E (edit), Ctrl+Enter (approve), Esc (cancel)</li>
-                      <li>• <strong>Enhanced Validation:</strong> Required edit reasons and content validation</li>
                       <li>• <strong>Audit Trail Ready:</strong> Captures edit reasons and custom explanations</li>
-                      <li>• <strong>Responsive Actions:</strong> Context-aware button states and tooltips</li>
                     </ul>
                   </div>
                 </div>

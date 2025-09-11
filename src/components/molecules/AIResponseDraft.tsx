@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback } from 'react';
-import { Button, ConfidenceScore, Badge, SmallText, Caption, Text, Tooltip, Toggle } from '../atoms';
+import { Button, ConfidenceScore, Badge, SmallText, Caption, Text, Tooltip, Toggle, ResponseStateIndicator } from '../atoms';
 import EditReasonSelector from './EditReasonSelector';
 import type { AIResponse, ResponseState, EditReason, ResponseMode } from '../../types';
 
@@ -42,15 +42,15 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
     }));
   }, [aiResponse.content]);
 
-  // State-based styling
+  // Enhanced state-based styling with animations
   const getStateStyles = (mode: ResponseMode) => {
     switch (mode) {
       case 'pending':
-        return 'bg-gray-50 border-gray-200';
+        return 'bg-gray-50 border-gray-200 hover:bg-gray-100 hover:border-gray-300';
       case 'editing':
-        return 'bg-blue-50 border-blue-300';
+        return 'bg-blue-50 border-blue-300 state-glow animate-fade-in';
       case 'resolved':
-        return 'bg-green-50 border-green-200';
+        return 'bg-green-50 border-green-200 state-glow-success';
       default:
         return 'bg-gray-50 border-gray-200';
     }
@@ -67,6 +67,14 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
       default:
         return 'default';
     }
+  };
+
+  // Enhanced container styling with state animations
+  const getContainerClasses = (mode: ResponseMode) => {
+    const baseClasses = 'bg-white border rounded-lg p-4 state-transition';
+    const stateClasses = getStateStyles(mode);
+    
+    return `${baseClasses} ${stateClasses}`;
   };
 
   // Event handlers
@@ -198,18 +206,29 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
   const validation = validateEditForm();
 
   return (
-    <div className={`bg-white border rounded-lg p-4 transition-colors duration-200 ${getStateStyles(responseState.mode)} ${className}`}>
+    <div className={`${getContainerClasses(responseState.mode)} ${className}`}>
       {/* Enhanced Header with State Management */}
       <div className="flex items-center justify-between mb-3">
         <div className="flex items-center space-x-3">
-          <SmallText weight="medium" variant="muted">AI Draft Response</SmallText>
+          <div className="flex items-center space-x-2">
+            <SmallText weight="medium" variant="muted">AI Draft Response</SmallText>
+            <ResponseStateIndicator 
+              state={responseState.mode} 
+              size="sm" 
+              showLabel={false}
+              animated={true}
+            />
+          </div>
           
-          <Badge variant={getStateBadgeVariant(responseState.mode)} className="text-xs capitalize">
+          <Badge 
+            variant={getStateBadgeVariant(responseState.mode)} 
+            className={`text-xs capitalize animate-fade-in ${responseState.mode === 'editing' ? 'animate-pulse-subtle' : ''}`}
+          >
             {responseState.mode}
           </Badge>
           
           {responseState.isModified && (
-            <Badge variant="warning" className="text-xs">
+            <Badge variant="warning" className="text-xs animate-slide-in">
               Modified
             </Badge>
           )}
@@ -226,34 +245,44 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         </Caption>
       </div>
 
-      {/* Enhanced Response Content */}
+      {/* Enhanced Response Content with State Animations */}
       <div className="mb-4">
         {responseState.mode === 'editing' ? (
-          <div className="space-y-4">
-            <textarea
-              value={responseState.currentContent}
-              onChange={(e) => handleContentChange(e.target.value)}
-              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
-              rows={6}
-              placeholder="Edit the AI-generated response..."
-              disabled={isLoading}
-            />
+          <div className="space-y-4 animate-slide-in">
+            <div className="relative">
+              <textarea
+                value={responseState.currentContent}
+                onChange={(e) => handleContentChange(e.target.value)}
+                className="w-full p-3 border border-blue-300 rounded-lg resize-none focus:ring-2 focus:ring-blue-500 focus:border-transparent state-transition state-glow"
+                rows={6}
+                placeholder="Edit the AI-generated response..."
+                disabled={isLoading}
+              />
+              {responseState.isModified && (
+                <div className="absolute top-2 right-2">
+                  <div className="w-2 h-2 bg-blue-500 rounded-full animate-ping"></div>
+                </div>
+              )}
+            </div>
             
-            {/* Edit Reason Selector */}
-            <EditReasonSelector
-              value={responseState.editReason}
-              customReason={responseState.customEditReason}
-              onReasonChange={handleEditReasonChange}
-              error={!validation.isValid ? validation.error : undefined}
-            />
+            {/* Edit Reason Selector with Animation */}
+            <div className="animate-fade-in">
+              <EditReasonSelector
+                value={responseState.editReason}
+                customReason={responseState.customEditReason}
+                onReasonChange={handleEditReasonChange}
+                error={!validation.isValid ? validation.error : undefined}
+              />
+            </div>
             
-            <div className="flex justify-end space-x-2">
+            <div className="flex justify-end space-x-2 animate-slide-in">
               <Tooltip content="Cancel edit (Esc)">
                 <Button
                   variant="secondary"
                   size="sm"
                   onClick={handleEditModeToggle}
                   disabled={isLoading}
+                  className="state-transition"
                 >
                   Cancel
                 </Button>
@@ -264,6 +293,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                   size="sm"
                   onClick={handleSaveEdit}
                   disabled={!validation.isValid || isLoading}
+                  className={`state-transition ${validation.isValid ? 'animate-bounce-gentle' : ''}`}
                 >
                   Save Changes
                 </Button>
@@ -272,10 +302,10 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
           </div>
         ) : (
           <div 
-            className={`p-3 rounded-lg border cursor-pointer transition-colors duration-200 ${
+            className={`p-3 rounded-lg border state-transition ${
               responseState.mode === 'resolved' 
-                ? 'border-green-200 cursor-default' 
-                : 'border-gray-200 hover:border-primary-300 hover:bg-gray-100'
+                ? 'border-green-200 cursor-default bg-green-25' 
+                : 'border-gray-200 hover:border-blue-300 hover:bg-blue-25 cursor-pointer hover:state-glow'
             }`}
             onClick={() => responseState.mode !== 'resolved' && !isLoading && handleEditModeToggle()}
           >
@@ -283,9 +313,17 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
               {responseState.currentContent}
             </Text>
             {responseState.mode !== 'resolved' && !isLoading && (
-              <Caption variant="primary" className="mt-2 opacity-60">
+              <Caption variant="primary" className="mt-2 opacity-60 animate-fade-in">
                 Click to edit this response (Ctrl+E)
               </Caption>
+            )}
+            {responseState.mode === 'resolved' && (
+              <div className="mt-2 flex items-center text-green-600 animate-fade-in">
+                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                </svg>
+                <Caption>Response sent successfully</Caption>
+              </div>
             )}
           </div>
         )}
@@ -315,9 +353,9 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         )}
       </div>
 
-      {/* Enhanced Action Buttons with Keyboard Shortcuts */}
+      {/* Enhanced Action Buttons with State Animations */}
       {responseState.mode !== 'editing' && (
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200">
+        <div className="flex items-center justify-between pt-3 border-t border-gray-200 animate-fade-in">
           <div className="flex space-x-2">
             {responseState.mode === 'pending' && (
               <>
@@ -327,6 +365,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                     size="sm"
                     onClick={handleApprove}
                     disabled={isLoading}
+                    className="state-transition hover:animate-bounce-gentle"
                   >
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -341,6 +380,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                     size="sm"
                     onClick={handleEditModeToggle}
                     disabled={isLoading}
+                    className="state-transition"
                   >
                     <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                       <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
@@ -352,12 +392,21 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
             )}
 
             {responseState.mode === 'resolved' && (
-              <Badge variant="success" className="flex items-center">
-                <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                </svg>
-                Response Sent
-              </Badge>
+              <div className="flex items-center animate-slide-in">
+                <Badge variant="success" className="flex items-center animate-bounce-gentle">
+                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
+                  </svg>
+                  Response Sent
+                </Badge>
+                <ResponseStateIndicator 
+                  state="resolved" 
+                  size="sm" 
+                  showLabel={false}
+                  animated={true}
+                  className="ml-2"
+                />
+              </div>
             )}
           </div>
 
@@ -367,6 +416,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
               size="sm"
               onClick={() => setShowRejectModal(true)}
               disabled={isLoading}
+              className="state-transition hover:state-glow-warning"
             >
               Escalate
             </Button>
@@ -374,10 +424,10 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         </div>
       )}
 
-      {/* Enhanced Escalation Modal */}
+      {/* Enhanced Escalation Modal with Animations */}
       {showRejectModal && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-          <div className="bg-white rounded-lg p-6 w-full max-w-md">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50 animate-fade-in">
+          <div className="bg-white rounded-lg p-6 w-full max-w-md animate-slide-in state-glow-warning">
             <Text size="lg" weight="medium" className="mb-4">
               Escalate Case
             </Text>
@@ -388,7 +438,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
               value={rejectReason}
               onChange={(e) => setRejectReason(e.target.value)}
               placeholder="Enter escalation reason..."
-              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-primary-500 focus:border-transparent transition-colors duration-200"
+              className="w-full p-3 border border-gray-300 rounded-lg resize-none focus:ring-2 focus:ring-red-500 focus:border-transparent state-transition"
               rows={4}
             />
             <div className="flex justify-end space-x-3 mt-4">
@@ -399,6 +449,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                   setShowRejectModal(false);
                   setRejectReason('');
                 }}
+                className="state-transition"
               >
                 Cancel
               </Button>
@@ -407,6 +458,7 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
                 size="sm"
                 onClick={handleReject}
                 disabled={!rejectReason.trim()}
+                className={`state-transition ${rejectReason.trim() ? 'state-glow-warning animate-bounce-gentle' : ''}`}
               >
                 Escalate Case
               </Button>

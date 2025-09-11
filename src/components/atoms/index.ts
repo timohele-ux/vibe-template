@@ -26,3 +26,4 @@ export { default as Tabs } from './Tabs';
 export { default as ConfidenceScore } from './ConfidenceScore';
 export { default as PriorityTag } from './PriorityTag';
 export { default as StatusIndicator } from './StatusIndicator';
+export { default as ResponseStateIndicator } from './ResponseStateIndicator';
