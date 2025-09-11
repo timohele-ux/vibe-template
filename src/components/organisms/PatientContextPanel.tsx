@@ -93,7 +93,6 @@ const PatientContextPanel: React.FC<PatientContextPanelProps> = ({
                   : 'text-gray-600 hover:text-gray-900 hover:bg-gray-50'
               }`}
             >
-              {tab.icon}
               <span className="hidden sm:inline">{tab.label}</span>
               {tab.count !== undefined && tab.count > 0 && (
                 <span className={`px-2 py-0.5 text-xs rounded-full ${
