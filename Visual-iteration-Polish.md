@@ -65,11 +65,6 @@ This initiative streamlines the support console UI to reduce visual clutter and 
 - Accent Color Discipline: Reserve accent for primary actions and error states only.
 - Consistent Buttons/Icons: One primary button style; secondary/tertiary clearly differentiated; standardized icon sizes.
 
-### Accessibility (Priority: High)
-- Contrast & Readability: Meet WCAG AA on text, badges, and controls.
-- Focus States & Keyboard Flow: Visible focus rings; logical tab order; hotkeys announced and remappable.
-- Screen Reader Semantics: Landmarks, aria-labels for actions, live region for AI draft updates.
-
 ---
 
 ## User Experience
@@ -122,7 +117,7 @@ This initiative streamlines the support console UI to reduce visual clutter and 
 - Responsiveness: Works from 1024px to 1440px+; mobile layout defers non-essential elements.
 
 ## Accessibility: 
-- AA contrast, visible focus rings, full keyboard support, ARIA roles on landmarks.
+- AA contrast, visible focus rings
 
 
 
