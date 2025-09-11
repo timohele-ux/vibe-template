@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Button, Badge, PriorityTag, StatusIndicator, Avatar, Heading2, Heading3, BodyText, SmallText, Caption, Tabs, Toggle } from '../atoms';
+import { Button, Badge, PriorityTag, StatusIndicator, Avatar, Heading2, Heading3, BodyText, SmallText, Caption, Tabs, Toggle, Separator } from '../atoms';
 import { 
   ConversationThread, 
   MessageComposer, 
@@ -7,7 +7,9 @@ import {
   BatchModeToggle, 
   BatchActions,
   PatientMessageCard,
-  ClinicalEscalationModal
+  ClinicalEscalationModal,
+  SuggestedResources,
+  ResponseActionButtons
 } from '../molecules';
 import { getResourcesByContext } from '../../mockData';
 import { useConversationState } from '../../lib/ConversationStateContext';
@@ -210,7 +212,12 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
 
   return (
     <div className={`flex flex-col h-full bg-white ${className}`}>
-      {/* Simplified Case Header */}
+      {/* Skip link for accessibility */}
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
+      
+      {/* Simplified Case Header with Keyboard Navigation */}
       <div className="flex-shrink-0 bg-white border-b border-gray-200 p-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center space-x-3">
@@ -464,8 +471,8 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
         )}
       </div>
 
-      {/* Content Area */}
-      <div className="flex-1 flex flex-col min-h-0">
+      {/* Content Area - Phase 8: Middle Panel Integration */}
+      <div id="main-content" className="flex-1 flex flex-col min-h-0" role="main" aria-label="Case details and response management">
         {/* Batch Actions */}
         {batchMode && pendingAIResponses.length > 0 && (
           <div className="flex-shrink-0 p-4 border-b border-gray-200">
@@ -480,89 +487,167 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
           </div>
         )}
 
-        {/* Conversation Thread */}
-        <div className="flex-1 overflow-auto">
-          {/* Patient Message Display */}
+        {/* Phase 8: Structured Middle Panel Layout with Progressive Enhancement */}
+        <div className="flex-1 flex flex-col overflow-auto">
+          {/* 1. Patient Message Card - Responsive */}
           {activeCase.messages.filter(msg => msg.senderType === 'patient').length > 0 && (
-            <div className="p-4 border-b border-gray-200">
-              <PatientMessageCard
-                message={activeCase.messages.filter(msg => msg.senderType === 'patient').slice(-1)[0]}
-                patient={activeCase.patient}
-              />
-            </div>
+            <>
+              <div className="p-3 sm:p-4">
+                <PatientMessageCard
+                  message={activeCase.messages.filter(msg => msg.senderType === 'patient').slice(-1)[0]}
+                  patient={activeCase.patient}
+                />
+              </div>
+              <Separator className="mx-3 sm:mx-4" />
+            </>
           )}
           
-          <ConversationThread
-            messages={activeCase.messages}
-            aiResponses={approvedAIResponses}
-          />
-        </div>
-
-        {/* Pending AI Responses */}
-        {pendingAIResponses.length > 0 && (
-          <div className="flex-shrink-0 p-4 border-t border-gray-200 bg-gray-50">
-            <div className="mb-3 flex items-center justify-between">
-              <Heading3 className="text-gray-700">
-                Pending AI Responses ({pendingAIResponses.length})
-              </Heading3>
-              {!batchMode && (
-                <Badge variant="warning" size="sm">
-                  Requires Review
-                </Badge>
-              )}
-            </div>
-            
-            <div className="space-y-3 max-h-60 overflow-y-auto">
-              {pendingAIResponses.map((response) => (
-                <div key={response.id} className="relative">
-                  {batchMode && (
-                    <div className="absolute top-2 left-2 z-10">
-                      <input
-                        type="checkbox"
-                        checked={selectedResponses.includes(response.id)}
-                        onChange={(e) => {
-                          if (e.target.checked) {
-                            setSelectedResponses([...selectedResponses, response.id]);
-                          } else {
-                            setSelectedResponses(selectedResponses.filter(id => id !== response.id));
-                          }
-                        }}
-                        className="rounded border-gray-300 text-blue-600 focus:ring-blue-500"
-                      />
-                    </div>
+          {/* 2. AI Response Draft Section - Progressive Enhancement */}
+          {pendingAIResponses.length > 0 && (
+            <>
+              <div className="p-3 sm:p-4">
+                <div className="mb-3 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
+                  <Heading3 className="text-gray-900 text-lg sm:text-xl">
+                    AI Response ({pendingAIResponses.length} pending)
+                  </Heading3>
+                  {!batchMode && (
+                    <Badge variant="warning" size="sm">
+                      Requires Review
+                    </Badge>
                   )}
-                  
-                  <AIResponseDraft
-                    aiResponse={response}
-                    onApprove={(id, modifications) => onApproveAIResponse(activeCase.id, id, modifications)}
-                    onReject={(id, reason) => onRejectAIResponse(activeCase.id, id, reason)}
-                    onEdit={(id, content, editReason, customReason) => handleEnhancedEdit(id, content, editReason, customReason)}
-                    suggestedResources={getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions)}
-                    onResourceClick={(resource) => {
-                      // Future implementation: open resource in modal or new tab
-                      console.log('Resource clicked:', resource);
-                      window.open(resource.url, '_blank', 'noopener,noreferrer');
-                    }}
-                    userRole="support" // TODO: Get from user context
-                    canApprove={true} // TODO: Determine based on user permissions
-                    canEscalate={true}
-                    isClinicalCase={activeCase.category === 'clinical' || activeCase.priority === 'critical'}
-                    onForwardSupervisor={() => {
-                      console.log('Forward case to supervisor:', activeCase.id);
-                      // TODO: Implement supervisor forwarding
-                    }}
-                    onRequestReview={() => {
-                      console.log('Request clinical review:', activeCase.id);
-                      // TODO: Implement clinical review request
-                    }}
-                    isLoading={isLoading}
-                    className={batchMode ? 'ml-8' : ''}
-                  />
                 </div>
-              ))}
-            </div>
+                
+                <div className="space-y-4 sm:space-y-6">
+                  {pendingAIResponses.map((response, index) => (
+                    <div key={response.id} className="relative">
+                      {batchMode && (
+                        <div className="absolute top-2 left-2 z-10">
+                          <input
+                            type="checkbox"
+                            checked={selectedResponses.includes(response.id)}
+                            onChange={(e) => {
+                              if (e.target.checked) {
+                                setSelectedResponses([...selectedResponses, response.id]);
+                              } else {
+                                setSelectedResponses(selectedResponses.filter(id => id !== response.id));
+                              }
+                            }}
+                            className="rounded border-gray-300 text-blue-600 focus:ring-blue-500 w-4 h-4 sm:w-5 sm:h-5"
+                          />
+                        </div>
+                      )}
+                      
+                      {/* AI Response Draft with Mobile Optimizations */}
+                      <div className="bg-white rounded-lg border border-gray-200 overflow-hidden">
+                        <AIResponseDraft
+                          aiResponse={response}
+                          onApprove={(id, modifications) => onApproveAIResponse(activeCase.id, id, modifications)}
+                          onReject={(id, reason) => onRejectAIResponse(activeCase.id, id, reason)}
+                          onEdit={(id, content, editReason, customReason) => handleEnhancedEdit(id, content, editReason, customReason)}
+                          suggestedResources={getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions)}
+                          onResourceClick={(resource) => {
+                            console.log('Resource clicked:', resource);
+                            window.open(resource.url, '_blank', 'noopener,noreferrer');
+                          }}
+                          userRole={currentUser.role}
+                          canApprove={true}
+                          canEscalate={true}
+                          isClinicalCase={activeCase.category === 'clinical' || activeCase.priority === 'critical'}
+                          onForwardSupervisor={() => {
+                            console.log('Forward case to supervisor:', activeCase.id);
+                          }}
+                          onRequestReview={() => {
+                            console.log('Request clinical review:', activeCase.id);
+                          }}
+                          isLoading={isLoading}
+                          className={batchMode ? 'ml-6 sm:ml-8' : ''}
+                        />
+                        
+                        {/* 3. Suggested Resources - Collapsible on Mobile */}
+                        <div className="border-t border-gray-100">
+                          <details className="sm:open" open>
+                            <summary 
+                              className="p-3 sm:p-4 cursor-pointer sm:pointer-events-none select-none sm:select-auto"
+                              aria-label="Toggle resources and actions section"
+                            >
+                              <span className="text-sm font-medium text-gray-700 sm:hidden">
+                                Resources & Actions
+                              </span>
+                            </summary>
+                            
+                            <div className="px-3 pb-3 sm:p-4 sm:pt-0 space-y-3">
+                              {/* Suggested Resources */}
+                              <SuggestedResources
+                                resources={getResourcesByContext(activeCase.category, activeCase.patient.medicalInfo.conditions)}
+                                onResourceClick={(resource) => {
+                                  console.log('Resource clicked:', resource);
+                                  window.open(resource.url, '_blank', 'noopener,noreferrer');
+                                }}
+                              />
+                              
+                              {/* 4. Response Action Buttons - Touch-Friendly */}
+                              <ResponseActionButtons
+                                responseMode="pending"
+                                onApprove={() => onApproveAIResponse(activeCase.id, response.id)}
+                                onEdit={() => {
+                                  console.log('Edit response:', response.id);
+                                }}
+                                onEscalate={() => setShowEscalationModal(true)}
+                                onSaveDraft={() => {
+                                  console.log('Save draft:', response.id);
+                                }}
+                                onForwardSupervisor={() => {
+                                  console.log('Forward to supervisor:', response.id);
+                                }}
+                                onRequestReview={() => {
+                                  console.log('Request clinical review:', response.id);
+                                }}
+                                canApprove={true}
+                                canEscalate={true}
+                                isClinicalCase={activeCase.category === 'clinical'}
+                                userRole={currentUser.role}
+                              />
+                            </div>
+                          </details>
+                        </div>
+                      </div>
+                      
+                      {/* Separator between responses - Hidden on mobile for compactness */}
+                      {index < pendingAIResponses.length - 1 && (
+                        <Separator className="my-4 sm:my-6 hidden sm:block" />
+                      )}
+                    </div>
+                  ))}
+                </div>
+              </div>
+              <Separator className="mx-3 sm:mx-4" />
+            </>
+          )}
+          
+          {/* 5. Conversation History - Collapsible on Mobile */}
+          <div className="flex-1 p-3 sm:p-4">
+            <details className="h-full flex flex-col" open>
+              <summary 
+                className="mb-3 cursor-pointer sm:pointer-events-none select-none sm:select-auto"
+                aria-label="Toggle conversation history section"
+              >
+                <Heading3 className="text-gray-900 text-lg sm:text-xl inline">
+                  Conversation History
+                </Heading3>
+                <span className="ml-2 text-sm text-gray-500 sm:hidden">
+                  (Tap to expand)
+                </span>
+              </summary>
+              
+              <div className="flex-1 min-h-0">
+                <ConversationThread
+                  messages={activeCase.messages}
+                  aiResponses={approvedAIResponses}
+                />
+              </div>
+            </details>
           </div>
-        )}
+        </div>
 
         {/* Message Composer */}
         <div className="flex-shrink-0">

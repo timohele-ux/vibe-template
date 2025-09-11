@@ -73,4 +73,105 @@
     0%, 100% { transform: scale(1); }
     50% { transform: scale(1.05); }
   }
+  
+  /* Phase 8: Progressive Enhancement Utilities */
+  
+  /* Mobile-optimized touch targets */
+  .touch-target {
+    min-height: 44px;
+    min-width: 44px;
+  }
+  
+  /* Enhanced scrolling for mobile */
+  .mobile-scroll {
+    -webkit-overflow-scrolling: touch;
+    scroll-behavior: smooth;
+  }
+  
+  /* Keyboard navigation enhancements */
+  .keyboard-nav-focus:focus-visible {
+    outline: 2px solid #3b82f6;
+    outline-offset: 2px;
+    border-radius: 4px;
+  }
+  
+  /* Skip to content for accessibility */
+  .skip-link {
+    position: absolute;
+    top: -40px;
+    left: 6px;
+    background: #3b82f6;
+    color: white;
+    padding: 8px;
+    text-decoration: none;
+    border-radius: 4px;
+    z-index: 100;
+  }
+  
+  .skip-link:focus {
+    top: 6px;
+  }
+}
+
+/* Mobile-specific enhancements */
+@media (max-width: 640px) {
+  /* Enhanced details/summary styling for mobile */
+  details:not([open]) summary {
+    background: linear-gradient(90deg, transparent 0%, rgba(0, 0, 0, 0.05) 100%);
+    border-radius: 6px;
+    padding: 12px;
+    margin: -12px -12px 0 -12px;
+  }
+  
+  details[open] summary {
+    border-bottom: 1px solid #e5e7eb;
+    padding-bottom: 12px;
+    margin-bottom: 12px;
+  }
+  
+  /* Reduced complexity for smaller screens */
+  .mobile-simplified {
+    box-shadow: none;
+    border-radius: 8px;
+  }
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .state-glow {
+    box-shadow: 0 0 0 2px #000;
+  }
+  
+  .state-glow-success {
+    box-shadow: 0 0 0 2px #16a34a;
+  }
+  
+  .state-glow-warning {
+    box-shadow: 0 0 0 2px #d97706;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .animate-fade-in,
+  .animate-slide-in,
+  .animate-pulse-subtle,
+  .animate-bounce-gentle {
+    animation: none;
+  }
+  
+  .state-transition {
+    transition: none;
+  }
+}
+
+/* Print styles for documentation */
+@media print {
+  .no-print {
+    display: none !important;
+  }
+  
+  .print-break {
+    page-break-before: always;
+  }
 }
