@@ -5,7 +5,8 @@ import {
   MessageComposer, 
   AIResponseDraft, 
   BatchModeToggle, 
-  BatchActions 
+  BatchActions,
+  PatientMessageCard
 } from '../molecules';
 import type { Case, AIResponse, Message } from '../../types';
 
@@ -300,6 +301,16 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
 
         {/* Conversation Thread */}
         <div className="flex-1 overflow-auto">
+          {/* Patient Message Display */}
+          {activeCase.messages.filter(msg => msg.senderType === 'patient').length > 0 && (
+            <div className="p-4 border-b border-gray-200">
+              <PatientMessageCard
+                message={activeCase.messages.filter(msg => msg.senderType === 'patient').slice(-1)[0]}
+                patient={activeCase.patient}
+              />
+            </div>
+          )}
+          
           <ConversationThread
             messages={activeCase.messages}
             aiResponses={approvedAIResponses}

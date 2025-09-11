@@ -16,7 +16,7 @@ import {
   Toggle,
   Tooltip
 } from '../atoms';
-import { Card, FormField } from '../molecules';
+import { Card, FormField, PatientMessageCard } from '../molecules';
 import { Form, Header } from '../organisms';
 
 const DesignSystem: React.FC = () => {
@@ -33,6 +33,39 @@ const DesignSystem: React.FC = () => {
     email: '',
     message: ''
   });
+
+  // Mock data for PatientMessageCard
+  const mockPatient = {
+    id: 'patient-1',
+    firstName: 'Sarah',
+    lastName: 'Johnson',
+    dateOfBirth: '1985-03-15',
+    email: 'sarah.johnson@email.com',
+    phone: '+1-555-0123',
+    communicationPreferences: {
+      email: true,
+      sms: false,
+      phone: true,
+      portal: true
+    },
+    medicalInfo: {
+      conditions: ['Diabetes Type 2'],
+      medications: ['Metformin'],
+      allergies: ['Penicillin']
+    },
+    riskFlags: []
+  };
+
+  const mockMessage = {
+    id: 'msg-1',
+    content: 'Hi, I need to reschedule my appointment for next Tuesday. I have a work conflict that came up. Could we move it to Wednesday or Thursday instead? Thank you for your help.',
+    timestamp: new Date(),
+    senderType: 'patient' as const,
+    senderId: 'patient-1',
+    senderName: 'Sarah Johnson',
+    isRead: true,
+    sentiment: 'neutral' as const
+  };
 
   const handleFormSubmit = (e: React.FormEvent) => {
     e.preventDefault();
@@ -378,6 +411,29 @@ const DesignSystem: React.FC = () => {
                       placeholder="Cannot edit"
                       disabled
                     />
+                  </div>
+                </div>
+              </section>
+
+              {/* PatientMessageCard */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">PatientMessageCard</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-2xl">
+                    <PatientMessageCard
+                      message={mockMessage}
+                      patient={mockPatient}
+                    />
+                  </div>
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• Displays patient information with avatar and initials</li>
+                      <li>• Shows original message content in read-only format</li>
+                      <li>• Includes timestamp and message metadata</li>
+                      <li>• Preserves message formatting and context</li>
+                      <li>• Blue left border indicates patient message type</li>
+                    </ul>
                   </div>
                 </div>
               </section>
