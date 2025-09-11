@@ -39,12 +39,12 @@ const Slider = React.forwardRef<
         {...props}
       >
         <SliderPrimitive.Track className="bg-gray-200 relative grow rounded-full h-2">
-          <SliderPrimitive.Range className="absolute bg-blue-600 rounded-full h-full" />
+          <SliderPrimitive.Range className="absolute bg-primary-600 rounded-full h-full" />
         </SliderPrimitive.Track>
         <SliderPrimitive.Thumb 
           className="
-            block w-5 h-5 bg-white border-2 border-blue-600 rounded-full
-            hover:bg-blue-50 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+            block w-5 h-5 bg-white border-2 border-primary-600 rounded-full
+            hover:bg-primary-50 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
             disabled:opacity-50 disabled:cursor-not-allowed
             transition-colors duration-200 shadow-md
           "

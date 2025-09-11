@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
-import { Button, Checkbox, Badge } from '../atoms';
+import { Button, Checkbox, Badge, Spinner } from '../atoms';
 
 interface BatchAction {
   id: string;
   label: string;
   description: string;
   type: 'approve' | 'reject' | 'escalate';
+  buttonVariant: 'primary' | 'secondary' | 'outline' | 'ghost' | 'danger';
   icon: React.ReactNode;
 }
 
@@ -37,6 +38,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
       label: 'Approve All',
       description: 'Approve and send all selected AI responses',
       type: 'approve',
+      buttonVariant: 'primary',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
@@ -48,6 +50,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
       label: 'Reject All',
       description: 'Reject all selected AI responses',
       type: 'reject',
+      buttonVariant: 'danger',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
@@ -59,6 +62,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
       label: 'Escalate All',
       description: 'Escalate all selected cases to a supervisor',
       type: 'escalate',
+      buttonVariant: 'outline',
       icon: (
         <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
           <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M7 11l5-5m0 0l5 5m-5-5v12" />
@@ -128,7 +132,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
             {batchActions.map((action) => (
               <Button
                 key={action.id}
-                variant={action.type}
+                variant={action.buttonVariant}
                 size="sm"
                 onClick={() => handleBatchAction(action.id, action.type)}
                 disabled={isProcessing}
@@ -148,10 +152,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
           {isProcessing && (
             <div className="flex items-center justify-center py-2">
               <div className="flex items-center space-x-2 text-sm text-gray-600">
-                <svg className="animate-spin h-4 w-4" fill="none" viewBox="0 0 24 24">
-                  <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                  <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
-                </svg>
+                <Spinner size="sm" variant="current" />
                 <span>Processing batch actions...</span>
               </div>
             </div>
@@ -203,7 +204,7 @@ const BatchActions: React.FC<BatchActionsProps> = ({
                 Cancel
               </Button>
               <Button
-                variant="reject"
+                variant="danger"
                 size="sm"
                 onClick={handleRejectWithReason}
                 disabled={!rejectReason.trim()}

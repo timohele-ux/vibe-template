@@ -24,15 +24,15 @@ const RadioGroupItem = React.forwardRef<
       ref={ref}
       className={`
         w-5 h-5 rounded-full border-2 border-gray-300 bg-white
-        data-[state=checked]:border-blue-600
-        focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2
+        data-[state=checked]:border-primary-600
+        focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2
         disabled:opacity-50 disabled:cursor-not-allowed
         transition-colors duration-200
         ${className}
       `}
       {...props}
     >
-      <RadioGroupPrimitive.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-blue-600" />
+      <RadioGroupPrimitive.Indicator className="flex items-center justify-center w-full h-full relative after:content-[''] after:block after:w-2.5 after:h-2.5 after:rounded-full after:bg-primary-600" />
     </RadioGroupPrimitive.Item>
   );
 });

@@ -9,6 +9,8 @@ interface AvatarProps {
   className?: string;
   userType?: 'patient' | 'staff' | 'ai' | 'system';
   isOnline?: boolean;
+  interactive?: boolean;
+  onClick?: () => void;
 }
 
 const Avatar: React.FC<AvatarProps> = ({ 
@@ -18,7 +20,9 @@ const Avatar: React.FC<AvatarProps> = ({
   size = 'md',
   className = '',
   userType = 'staff',
-  isOnline = false
+  isOnline = false,
+  interactive = false,
+  onClick
 }) => {
   const sizeClasses = {
     xs: 'w-6 h-6 text-xs',
@@ -49,9 +53,13 @@ const Avatar: React.FC<AvatarProps> = ({
       <AvatarPrimitive.Root 
         className={`
           inline-flex items-center justify-center overflow-hidden rounded-full
-          bg-gray-100 select-none align-middle
+          bg-gray-100 select-none align-middle transition-colors duration-200
+          ${interactive ? 'cursor-pointer hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2' : ''}
           ${sizeClasses[size]} ${getUserTypeBorder(userType)} ${className}
         `}
+        tabIndex={interactive ? 0 : undefined}
+        role={interactive ? 'button' : undefined}
+        onClick={onClick}
       >
         <AvatarPrimitive.Image
           src={src}

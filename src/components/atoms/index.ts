@@ -17,6 +17,7 @@ export { default as Avatar } from './Avatar';
 export { default as Badge } from './Badge';
 export { default as Separator } from './Separator';
 export { default as Tooltip } from './Tooltip';
+export { default as Spinner } from './Spinner';
 
 // Layout components
 export { default as Tabs } from './Tabs';

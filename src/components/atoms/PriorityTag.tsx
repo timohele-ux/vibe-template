@@ -5,6 +5,7 @@ type Priority = 'critical' | 'urgent' | 'routine' | 'low';
 interface PriorityTagProps extends React.HTMLAttributes<HTMLSpanElement> {
   priority: Priority;
   size?: 'sm' | 'md' | 'lg';
+  interactive?: boolean;
 }
 
 const PriorityTag = React.forwardRef<HTMLSpanElement, PriorityTagProps>(
@@ -12,9 +13,10 @@ const PriorityTag = React.forwardRef<HTMLSpanElement, PriorityTagProps>(
     className = '',
     priority,
     size = 'md',
+    interactive = false,
     ...props 
   }, ref) => {
-    const baseClasses = 'inline-flex items-center font-medium rounded-full border';
+    const baseClasses = 'inline-flex items-center font-medium rounded-full border transition-colors duration-200 hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2';
     
     const priorityClasses = {
       critical: 'text-red-800 bg-red-100 border-red-300',
@@ -59,6 +61,7 @@ const PriorityTag = React.forwardRef<HTMLSpanElement, PriorityTagProps>(
       <span
         className={`${baseClasses} ${priorityClasses[priority]} ${sizeClasses[size]} ${className}`}
         ref={ref}
+        tabIndex={interactive ? 0 : undefined}
         {...props}
       >
         <span className="mr-1">{getPriorityIcon(priority)}</span>

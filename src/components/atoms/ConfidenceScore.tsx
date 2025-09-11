@@ -8,6 +8,7 @@ interface ConfidenceScoreProps extends React.HTMLAttributes<HTMLDivElement> {
   size?: 'sm' | 'md' | 'lg';
   showLabel?: boolean;
   showProgressBar?: boolean;
+  interactive?: boolean;
 }
 
 const ConfidenceScore = React.forwardRef<HTMLDivElement, ConfidenceScoreProps>(
@@ -18,6 +19,7 @@ const ConfidenceScore = React.forwardRef<HTMLDivElement, ConfidenceScoreProps>(
     score, 
     showLabel = true, 
     showProgressBar = false,
+    interactive = false,
     ...props 
   }, ref) => {
     const getConfidenceIcon = (confidenceLevel: ConfidenceLevel): string => {
@@ -42,7 +44,7 @@ const ConfidenceScore = React.forwardRef<HTMLDivElement, ConfidenceScoreProps>(
       }
     };
 
-    const baseClasses = 'inline-flex items-center gap-1 font-medium transition-colors border rounded-md';
+    const baseClasses = `inline-flex items-center gap-1 font-medium transition-colors duration-200 border rounded-md ${interactive ? 'cursor-pointer hover:opacity-80 focus:outline-none focus:ring-2 focus:ring-primary-500 focus:ring-offset-2' : ''}`;
     
     const levelClasses = {
       high: 'text-green-700 bg-green-50 border-green-200',
@@ -66,6 +68,8 @@ const ConfidenceScore = React.forwardRef<HTMLDivElement, ConfidenceScoreProps>(
       <div
         className={`${baseClasses} ${levelClasses[level]} ${sizeClasses[size]} ${className}`}
         ref={ref}
+        tabIndex={interactive ? 0 : undefined}
+        role={interactive ? 'button' : undefined}
         {...props}
       >
         <span className="text-current">
