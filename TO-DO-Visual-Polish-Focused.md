@@ -195,6 +195,160 @@ This document outlines a visual polish implementation plan focused on styling th
 - ✅ Standardize corner radius, shadows, and borders
 - ✅ Final spacing audit using 8px baseline grid
 
+## Phase 8: Visual Coherence Review - Middle Panel UX Simplification
+
+### 8.1 Unified AI Draft Interface
+**Implementation Focus:** Consolidate multiple input areas into single editable AI draft
+**Target Components:** `ActiveCasePanel.tsx`, `AIResponseDraft.tsx`, `MessageComposer.tsx`
+
+**Step 1: Simplify AIResponseDraft Component**
+- [ ] Remove multiple answer field variations in `AIResponseDraft.tsx`
+- [ ] Create single unified editing interface with inline editing capability
+- [ ] Add collapsible "Internal Notes" section using existing `Toggle` atom
+- [ ] Update AI response display to be directly editable (click-to-edit pattern)
+
+**Step 2: Streamline MessageComposer**
+- [ ] Integrate AI suggestion directly into main composer area
+- [ ] Remove separate AI suggestion preview boxes
+- [ ] Add subtle AI enhancement indicator when suggestions are applied
+- [ ] Simplify character count display using existing `Caption` component
+
+**Step 3: Confidence/Risk Badge Optimization** 
+- [ ] Update `ConfidenceScore` component for subtle display
+- [ ] Replace large confidence banners with small tooltip-enabled badges
+- [ ] Use neutral gray tones instead of attention-grabbing colors
+- [ ] Position badges inline with metadata, not as prominent elements
+
+### 8.2 Streamlined Action System
+**Implementation Focus:** Simplify review/approval workflow
+**Target Components:** `ActiveCasePanel.tsx`, `BatchActions.tsx`
+
+**Step 4: Primary Action Consolidation**
+- [ ] Reduce action buttons to three primary actions: Approve, Request Edit, Escalate
+- [ ] Update button hierarchy: Approve (primary), Request Edit (secondary), Escalate (outline)
+- [ ] Remove redundant confirmation dialogs for low-risk actions
+- [ ] Add confirmation only for high-risk escalations using existing modal patterns
+
+**Step 5: Keyboard Shortcut Integration**
+- [ ] Add keyboard event handlers to `ActiveCasePanel`:
+  - Cmd/Ctrl+Enter: Approve current draft
+  - E: Switch to edit mode
+  - X: Escalate case
+  - J/K: Navigate conversations (if applicable)
+- [ ] Add subtle keyboard shortcut hints using `Tooltip` component
+- [ ] Ensure shortcuts work only when panel is focused
+
+### 8.3 Metadata Minimization
+**Implementation Focus:** Reduce visual clutter in case information display
+**Target Components:** `ActiveCasePanel.tsx`, case header areas
+
+**Step 6: Essential Information Only**
+- [ ] Show only critical case data: Customer name, last message timestamp
+- [ ] Move case details (priority, category, history) to collapsible "Details" section
+- [ ] Use existing `Tabs` component for organizing detailed information
+- [ ] Apply consistent `SmallText`/`Caption` typography for metadata
+
+## Phase 9: Metrics & Dashboard - Analytics Separation
+
+### 9.1 Dedicated Metrics Section
+**Implementation Focus:** Create separate metrics area outside main workflow
+**Target Components:** New `MetricsPanel.tsx` organism, `TopNavigation.tsx`
+
+**Step 7: Create MetricsPanel Organism**
+- [ ] Create new `src/components/organisms/MetricsPanel.tsx`
+- [ ] Display approval rate, escalation rate, average edits per draft
+- [ ] Use existing `Card` molecule for metric groupings
+- [ ] Implement using existing `Text` component hierarchy for data display
+
+**Step 8: Navigation Integration**
+- [ ] Add "Metrics" item to `TopNavigation.tsx`
+- [ ] Create toggle between main dashboard and metrics view
+- [ ] Use existing `Button` component with appropriate variant
+- [ ] Maintain consistent navigation styling with current design tokens
+
+### 9.2 Contextual Access & Filtering
+**Implementation Focus:** Smart metrics access without workflow disruption
+**Target Components:** `MetricsPanel.tsx`, queue components
+
+**Step 9: Smart Metrics Link**
+- [ ] Add subtle metrics link in queue panel (not inline charts)
+- [ ] Use existing `Badge` component to show key metric summary
+- [ ] Link opens dedicated metrics view, not modal overlay
+- [ ] Maintain current queue focus without visual distraction
+
+**Step 10: Timeframe Controls**
+- [ ] Add filter controls using existing `Select` and `Tabs` components
+- [ ] Implement daily/weekly/monthly view switching
+- [ ] Add export functionality using existing `Button` component
+- [ ] Use existing `Spinner` component for loading states during data fetch
+
+### 9.3 Layout & Hierarchy Refinement
+**Implementation Focus:** Visual consistency improvements across interface
+**Target Components:** All layout-related components
+
+**Step 11: Border & Shadow Discipline**
+- [ ] Audit all components for excessive border usage
+- [ ] Replace hard borders with subtle dividers using `Separator` component
+- [ ] Limit shadows to card elevation only (remove decorative shadows)
+- [ ] Use existing shadow tokens: `shadow-sm`, `shadow-md`, `shadow-lg`
+
+**Step 12: Typography Scale Enforcement**
+- [ ] Audit all components for typography consistency
+- [ ] Ensure single type ramp usage: `Heading1-6`, `BodyText`, `SmallText`, `Caption`
+- [ ] Remove any remaining hardcoded text styling
+- [ ] Standardize metadata text using `Caption` component
+
+**Step 13: Accent Color Discipline**
+- [ ] Audit primary color usage across all components
+- [ ] Reserve primary colors for primary actions and error states only
+- [ ] Convert decorative color usage to neutral grays
+- [ ] Ensure consistent use of primary color tokens (primary-500, primary-600, etc.)
+
+**Step 14: Button & Icon Standardization**
+- [ ] Verify consistent button variant usage across all components
+- [ ] Standardize icon sizes using existing size variants
+- [ ] Ensure clear visual hierarchy: primary → secondary → outline → ghost
+- [ ] Remove any custom button styling that bypasses atomic component system
+
+
+
+## Implementation Timeline & Approach
+
+### Phase 8 & 9 Implementation Strategy
+**Focus:** UX simplification and analytics separation using existing atomic design system
+**Method:** Component refactoring and new organism creation within current architecture
+**Priority:** User workflow optimization > Feature expansion
+
+### Development Sequence (Estimated 3-4 days):
+
+**Day 1: Middle Panel Simplification (Steps 1-3)**
+- Refactor `AIResponseDraft.tsx` for unified editing
+- Simplify `MessageComposer.tsx` AI integration
+- Update confidence badge display patterns
+
+**Day 2: Action System & Shortcuts (Steps 4-5)**
+- Streamline action buttons in `ActiveCasePanel.tsx`
+- Implement keyboard shortcut handlers
+- Remove redundant confirmation patterns
+
+**Day 3: Metadata & Metrics Foundation (Steps 6-7)**
+- Minimize case metadata display
+- Create new `MetricsPanel.tsx` organism
+- Integrate metrics navigation
+
+**Day 4: Polish & Consistency (Steps 8-14)**
+- Complete metrics filtering and export
+- Final border/shadow/typography audit
+- Accent color discipline enforcement
+
+### Success Criteria for Phases 8 & 9:
+- **Workflow Efficiency:** Reduced clicks and visual noise in middle panel
+- **Analytics Separation:** Clear separation between operational and analytical views
+- **Keyboard Navigation:** Essential actions accessible via shortcuts
+- **Visual Hierarchy:** Consistent use of design tokens across all new/updated components
+- **Component Reuse:** 100% use of existing atomic components, no new styling patterns
+
+
 **Audit Results:**
 - ✅ **Border Radius Consistency:** All components now use standardized `rounded-lg`, `rounded-full`, or `rounded-md` patterns
 - ✅ **Shadow Consistency:** All shadow usage follows `shadow-sm`, `shadow-md`, `shadow-lg` patterns
