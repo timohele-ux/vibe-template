@@ -2,7 +2,10 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Button, ConfidenceScore, Badge, SmallText, Caption, Text, Tooltip, Toggle, ResponseStateIndicator } from '../atoms';
 import EditReasonSelector from './EditReasonSelector';
 import SuggestedResources from './SuggestedResources';
-import type { AIResponse, ResponseState, EditReason, ResponseMode, SuggestedResource } from '../../types';
+import ResponseActionButtons from './ResponseActionButtons';
+import KeyboardShortcutsModal from './KeyboardShortcutsModal';
+import { useResponseShortcuts } from '../../lib/useKeyboardShortcuts';
+import type { AIResponse, ResponseState, EditReason, ResponseMode, SuggestedResource, UserRole } from '../../types';
 
 interface AIResponseDraftProps {
   aiResponse: AIResponse;
@@ -11,6 +14,12 @@ interface AIResponseDraftProps {
   onEdit: (id: string, newContent: string, editReason: EditReason, customReason?: string) => void;
   suggestedResources?: SuggestedResource[];
   onResourceClick?: (resource: SuggestedResource) => void;
+  userRole?: UserRole;
+  canApprove?: boolean;
+  canEscalate?: boolean;
+  isClinicalCase?: boolean;
+  onForwardSupervisor?: () => void;
+  onRequestReview?: () => void;
   isLoading?: boolean;
   className?: string;
 }
@@ -22,6 +31,12 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
   onEdit,
   suggestedResources = [],
   onResourceClick,
+  userRole = 'support',
+  canApprove = true,
+  canEscalate = true,
+  isClinicalCase = false,
+  onForwardSupervisor,
+  onRequestReview,
   isLoading = false,
   className = ''
 }) => {
@@ -37,6 +52,16 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
   const [internalNote, setInternalNote] = useState('');
   const [rejectReason, setRejectReason] = useState('');
   const [showRejectModal, setShowRejectModal] = useState(false);
+  const [showShortcutsModal, setShowShortcutsModal] = useState(false);
+
+  // Enhanced keyboard shortcuts integration
+  const { getShortcutHelp } = useResponseShortcuts({
+    onApprove: responseState.mode === 'pending' ? () => handleApprove() : undefined,
+    onEdit: responseState.mode === 'pending' ? () => handleEditModeToggle() : undefined,
+    onCancel: responseState.mode === 'editing' ? () => handleEditModeToggle() : undefined,
+    onSave: responseState.mode === 'editing' ? () => handleSaveEdit() : undefined,
+    onShowHelp: () => setShowShortcutsModal(true)
+  });
 
   // Update state when aiResponse changes
   useEffect(() => {
@@ -367,76 +392,37 @@ const AIResponseDraft: React.FC<AIResponseDraftProps> = ({
         )}
       </div>
 
-      {/* Enhanced Action Buttons with State Animations */}
+      {/* Enhanced Action Button System with Keyboard Shortcuts */}
       {responseState.mode !== 'editing' && (
-        <div className="flex items-center justify-between pt-3 border-t border-gray-200 animate-fade-in">
-          <div className="flex space-x-2">
-            {responseState.mode === 'pending' && (
-              <>
-                <Tooltip content="Approve & send (Ctrl+Enter)">
-                  <Button
-                    variant="primary"
-                    size="sm"
-                    onClick={handleApprove}
-                    disabled={isLoading}
-                    className="state-transition hover:animate-bounce-gentle"
-                  >
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                    </svg>
-                    Approve & Send
-                  </Button>
-                </Tooltip>
-                
-                <Tooltip content="Edit response (Ctrl+E)">
-                  <Button
-                    variant="secondary"
-                    size="sm"
-                    onClick={handleEditModeToggle}
-                    disabled={isLoading}
-                    className="state-transition"
-                  >
-                    <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z" />
-                    </svg>
-                    Edit
-                  </Button>
-                </Tooltip>
-              </>
-            )}
-
-            {responseState.mode === 'resolved' && (
-              <div className="flex items-center animate-slide-in">
-                <Badge variant="success" className="flex items-center animate-bounce-gentle">
-                  <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M5 13l4 4L19 7" />
-                  </svg>
-                  Response Sent
-                </Badge>
-                <ResponseStateIndicator 
-                  state="resolved" 
-                  size="sm" 
-                  showLabel={false}
-                  animated={true}
-                  className="ml-2"
-                />
-              </div>
-            )}
-          </div>
-
-          {responseState.mode === 'pending' && (
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={() => setShowRejectModal(true)}
-              disabled={isLoading}
-              className="state-transition hover:state-glow-warning"
-            >
-              Escalate
-            </Button>
-          )}
-        </div>
+        <ResponseActionButtons
+          responseMode={responseState.mode}
+          userRole={userRole}
+          isLoading={isLoading}
+          canApprove={canApprove}
+          canEscalate={canEscalate}
+          isClinicalCase={isClinicalCase}
+          hasValidation={validation.isValid}
+          onApprove={handleApprove}
+          onSaveDraft={() => {}} // Not used in pending mode
+          onEdit={handleEditModeToggle}
+          onEscalate={() => setShowRejectModal(true)}
+          onForwardSupervisor={onForwardSupervisor || (() => {
+            console.log('Forward to supervisor - not implemented');
+          })}
+          onRequestReview={onRequestReview || (() => {
+            console.log('Request clinical review - not implemented');
+          })}
+          onShowShortcuts={() => setShowShortcutsModal(true)}
+        />
       )}
+
+      {/* Keyboard Shortcuts Help Modal */}
+      <KeyboardShortcutsModal
+        isOpen={showShortcutsModal}
+        onClose={() => setShowShortcutsModal(false)}
+        shortcuts={getShortcutHelp()}
+        title="AI Response Management Shortcuts"
+      />
 
       {/* Enhanced Escalation Modal with Animations */}
       {showRejectModal && (

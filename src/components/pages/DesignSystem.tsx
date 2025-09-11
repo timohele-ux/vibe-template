@@ -17,9 +17,10 @@ import {
   Tooltip,
   ResponseStateIndicator
 } from '../atoms';
-import { Card, FormField, PatientMessageCard, AIResponseDraft, SuggestedResources } from '../molecules';
+import { Card, FormField, PatientMessageCard, AIResponseDraft, SuggestedResources, ResponseActionButtons, KeyboardShortcutsModal } from '../molecules';
 import { Form, Header } from '../organisms';
 import { mockSuggestedResources } from '../../mockData';
+import { useResponseShortcuts } from '../../lib/useKeyboardShortcuts';
 
 const DesignSystem: React.FC = () => {
   const [inputValue, setInputValue] = React.useState('');
@@ -34,6 +35,32 @@ const DesignSystem: React.FC = () => {
     name: '',
     email: '',
     message: ''
+  });
+
+  // State for Phase 5 demonstrations
+  const [currentResponseMode, setCurrentResponseMode] = React.useState<'pending' | 'editing' | 'resolved'>('pending');
+  const [showShortcutsModal, setShowShortcutsModal] = React.useState(false);
+  const [currentUserRole, setCurrentUserRole] = React.useState<'admin' | 'clinician' | 'support' | 'viewer'>('support');
+
+  // Enhanced keyboard shortcuts integration for demo
+  const { getShortcutHelp } = useResponseShortcuts({
+    onApprove: currentResponseMode === 'pending' ? () => {
+      console.log('Demo: Approve action');
+      setCurrentResponseMode('resolved');
+    } : undefined,
+    onEdit: currentResponseMode === 'pending' ? () => {
+      console.log('Demo: Edit action');
+      setCurrentResponseMode('editing');
+    } : undefined,
+    onCancel: currentResponseMode === 'editing' ? () => {
+      console.log('Demo: Cancel action');
+      setCurrentResponseMode('pending');
+    } : undefined,
+    onSave: currentResponseMode === 'editing' ? () => {
+      console.log('Demo: Save action');
+      setCurrentResponseMode('pending');
+    } : undefined,
+    onShowHelp: () => setShowShortcutsModal(true)
   });
 
   // Mock data for PatientMessageCard
@@ -557,6 +584,153 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                 </div>
               </section>
 
+              {/* ResponseActionButtons */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">ResponseActionButtons</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-3xl space-y-6">
+                    <div className="flex items-center space-x-4 mb-4">
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">Response Mode:</label>
+                        <select 
+                          value={currentResponseMode} 
+                          onChange={(e) => setCurrentResponseMode(e.target.value as any)}
+                          className="border border-gray-300 rounded-lg px-3 py-1 text-sm"
+                        >
+                          <option value="pending">Pending</option>
+                          <option value="editing">Editing</option>
+                          <option value="resolved">Resolved</option>
+                        </select>
+                      </div>
+                      <div>
+                        <label className="block text-sm font-medium text-gray-700 mb-2">User Role:</label>
+                        <select 
+                          value={currentUserRole} 
+                          onChange={(e) => setCurrentUserRole(e.target.value as any)}
+                          className="border border-gray-300 rounded-lg px-3 py-1 text-sm"
+                        >
+                          <option value="admin">Admin</option>
+                          <option value="clinician">Clinician</option>
+                          <option value="support">Support</option>
+                          <option value="viewer">Viewer</option>
+                        </select>
+                      </div>
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-gray-200 p-4">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-medium text-gray-900 mb-2">Standard Actions</h3>
+                        <p className="text-sm text-gray-600">Role: {currentUserRole}, Mode: {currentResponseMode}</p>
+                      </div>
+                      
+                      <ResponseActionButtons
+                        responseMode={currentResponseMode}
+                        userRole={currentUserRole}
+                        isLoading={false}
+                        canApprove={currentUserRole === 'admin' || currentUserRole === 'clinician'}
+                        canEscalate={true}
+                        isClinicalCase={false}
+                        hasValidation={true}
+                        onApprove={() => {
+                          console.log('Demo: Approve action');
+                          setCurrentResponseMode('resolved');
+                        }}
+                        onSaveDraft={() => {
+                          console.log('Demo: Save draft');
+                          setCurrentResponseMode('pending');
+                        }}
+                        onEdit={() => {
+                          console.log('Demo: Edit action');
+                          setCurrentResponseMode('editing');
+                        }}
+                        onEscalate={() => console.log('Demo: Escalate action')}
+                        onForwardSupervisor={() => console.log('Demo: Forward to supervisor')}
+                        onRequestReview={() => console.log('Demo: Request clinical review')}
+                        onShowShortcuts={() => setShowShortcutsModal(true)}
+                      />
+                    </div>
+
+                    <div className="bg-white rounded-lg border border-red-200 p-4">
+                      <div className="mb-4">
+                        <h3 className="text-lg font-medium text-red-900 mb-2">Clinical Case Example</h3>
+                        <p className="text-sm text-red-600">High-priority clinical case requiring review</p>
+                      </div>
+                      
+                      <ResponseActionButtons
+                        responseMode="pending"
+                        userRole="support"
+                        isLoading={false}
+                        canApprove={false}
+                        canEscalate={true}
+                        isClinicalCase={true}
+                        hasValidation={true}
+                        onApprove={() => console.log('Demo: Approve action')}
+                        onSaveDraft={() => console.log('Demo: Save draft')}
+                        onEdit={() => console.log('Demo: Edit action')}
+                        onEscalate={() => console.log('Demo: Escalate action')}
+                        onForwardSupervisor={() => console.log('Demo: Forward to supervisor')}
+                        onRequestReview={() => console.log('Demo: Request clinical review')}
+                        onShowShortcuts={() => setShowShortcutsModal(true)}
+                      />
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Phase 5 Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• <strong>Role-Based Actions:</strong> Different button sets based on user permissions</li>
+                      <li>• <strong>Context-Aware Buttons:</strong> Clinical cases show required review actions</li>
+                      <li>• <strong>Comprehensive Keyboard Shortcuts:</strong> Ctrl+Enter (approve), Ctrl+E (edit), Escape (cancel)</li>
+                      <li>• <strong>Action Hierarchy:</strong> Primary, secondary, and escalation action grouping</li>
+                      <li>• <strong>State-Responsive UI:</strong> Buttons adapt to pending/editing/resolved modes</li>
+                      <li>• <strong>Visual Feedback:</strong> Icons, tooltips, and animation states for all actions</li>
+                      <li>• <strong>Workflow Management:</strong> Forward to supervisor and clinical review options</li>
+                      <li>• <strong>Help Integration:</strong> Built-in keyboard shortcuts reference (Ctrl+/)</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
+              {/* KeyboardShortcutsModal Demo */}
+              <section>
+                <h2 className="text-2xl font-semibold text-gray-800 mb-4">KeyboardShortcutsModal</h2>
+                <div className="bg-gray-100 p-6 rounded-lg">
+                  <div className="max-w-2xl">
+                    <div className="bg-white rounded-lg border border-gray-200 p-4">
+                      <h3 className="text-lg font-medium text-gray-900 mb-3">Keyboard Shortcuts Help System</h3>
+                      <p className="text-sm text-gray-600 mb-4">
+                        Click the button below to see the keyboard shortcuts modal in action. 
+                        The modal shows context-aware shortcuts based on the current response state.
+                      </p>
+                      
+                      <Button
+                        variant="outline"
+                        size="sm"
+                        onClick={() => setShowShortcutsModal(true)}
+                        className="state-transition"
+                      >
+                        <svg className="w-4 h-4 mr-1" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                        Show Keyboard Shortcuts
+                      </Button>
+                    </div>
+                  </div>
+                  
+                  <div className="mt-4 p-4 bg-white rounded-lg">
+                    <h3 className="text-lg font-medium mb-2">Features:</h3>
+                    <ul className="text-sm text-gray-600 space-y-1">
+                      <li>• <strong>Context-Aware Shortcuts:</strong> Shows only relevant shortcuts for current state</li>
+                      <li>• <strong>Categorized Display:</strong> Groups shortcuts by primary, secondary, navigation, and utility</li>
+                      <li>• <strong>Visual Key Representation:</strong> Keyboard-style key displays with proper formatting</li>
+                      <li>• <strong>Responsive Modal:</strong> Clean, accessible modal design with escape key support</li>
+                      <li>• <strong>Category Badges:</strong> Color-coded badges for different shortcut categories</li>
+                      <li>• <strong>Help Integration:</strong> Accessible via Ctrl+/ from anywhere in the system</li>
+                    </ul>
+                  </div>
+                </div>
+              </section>
+
               {/* AIResponseDraft */}
               <section>
                 <h2 className="text-2xl font-semibold text-gray-800 mb-4">AIResponseDraft</h2>
@@ -569,10 +743,16 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                       onEdit={(id, content, editReason, customReason) => console.log('Edited:', id, content, editReason, customReason)}
                       suggestedResources={mockSuggestedResources.slice(0, 3)}
                       onResourceClick={(resource) => console.log('Resource clicked:', resource.title)}
+                      userRole="support"
+                      canApprove={true}
+                      canEscalate={true}
+                      isClinicalCase={false}
+                      onForwardSupervisor={() => console.log('Demo: Forward to supervisor')}
+                      onRequestReview={() => console.log('Demo: Request clinical review')}
                     />
                   </div>
                   <div className="mt-4 p-4 bg-white rounded-lg">
-                    <h3 className="text-lg font-medium mb-2">Phase 2, 3 & 4 Features:</h3>
+                    <h3 className="text-lg font-medium mb-2">Phase 2, 3, 4 & 5 Features:</h3>
                     <ul className="text-sm text-gray-600 space-y-1">
                       <li>• <strong>State Management:</strong> Pending → Editing → Resolved workflow</li>
                       <li>• <strong>Edit Reason Tracking:</strong> Mandatory reason selection for audit compliance</li>
@@ -581,6 +761,8 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
                       <li>• <strong>Response State Indicators:</strong> Animated dots with state-specific icons</li>
                       <li>• <strong>Enhanced Visual Feedback:</strong> Pulse effects, glow states, and smooth transitions</li>
                       <li>• <strong>Suggested Resources Integration:</strong> Context-aware resource suggestions below response content</li>
+                      <li>• <strong>Enhanced Action Button System:</strong> Role-based actions with comprehensive keyboard shortcuts</li>
+                      <li>• <strong>Keyboard Shortcut System:</strong> Global shortcuts with context-aware help modal (Ctrl+/)</li>
                       <li>• <strong>Keyboard Shortcuts:</strong> Ctrl+E (edit), Ctrl+Enter (approve), Esc (cancel)</li>
                       <li>• <strong>Audit Trail Ready:</strong> Captures edit reasons and custom explanations</li>
                     </ul>
@@ -667,6 +849,14 @@ If symptoms worsen or you experience fainting, please contact us immediately.`,
           </Tabs.Content>
         </Tabs>
       </div>
+      
+      {/* Global Keyboard Shortcuts Modal */}
+      <KeyboardShortcutsModal
+        isOpen={showShortcutsModal}
+        onClose={() => setShowShortcutsModal(false)}
+        shortcuts={getShortcutHelp()}
+        title="AI Response Management Shortcuts"
+      />
     </div>
   );
 };

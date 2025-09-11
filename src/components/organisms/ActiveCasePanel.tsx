@@ -363,6 +363,18 @@ const ActiveCasePanel: React.FC<ActiveCasePanelProps> = ({
                       console.log('Resource clicked:', resource);
                       window.open(resource.url, '_blank', 'noopener,noreferrer');
                     }}
+                    userRole="support" // TODO: Get from user context
+                    canApprove={true} // TODO: Determine based on user permissions
+                    canEscalate={true}
+                    isClinicalCase={activeCase.category === 'clinical' || activeCase.priority === 'critical'}
+                    onForwardSupervisor={() => {
+                      console.log('Forward case to supervisor:', activeCase.id);
+                      // TODO: Implement supervisor forwarding
+                    }}
+                    onRequestReview={() => {
+                      console.log('Request clinical review:', activeCase.id);
+                      // TODO: Implement clinical review request
+                    }}
                     isLoading={isLoading}
                     className={batchMode ? 'ml-8' : ''}
                   />

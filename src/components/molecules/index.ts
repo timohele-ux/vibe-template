@@ -3,6 +3,8 @@ export { default as FormField } from './FormField';
 export { default as PatientMessageCard } from './PatientMessageCard';
 export { default as EditReasonSelector } from './EditReasonSelector';
 export { default as SuggestedResources } from './SuggestedResources';
+export { default as ResponseActionButtons } from './ResponseActionButtons';
+export { default as KeyboardShortcutsModal } from './KeyboardShortcutsModal';
 export { default as CaseListItem } from './CaseListItem';
 export { default as QueueFilters } from './QueueFilters';
 export { default as QueueStats } from './QueueStats';
