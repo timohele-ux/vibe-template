@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import { TopNavigation, SupportRequestsQueue, ActiveCasePanel, PatientContextPanel } from '../organisms';
 import { mockCases, mockMetrics, mockCurrentUser } from '../../mockData';
 import type { Case, AIResponse } from '../../types';
+import type { EscalationData } from '../molecules';
 
 const MediReplyPage: React.FC = () => {
   const [selectedCaseId, setSelectedCaseId] = useState<string | undefined>();
@@ -121,13 +122,20 @@ const MediReplyPage: React.FC = () => {
     );
   };
 
-  const handleEscalateCase = (caseId: string, reason: string) => {
-    console.log(`Escalating case ${caseId}:`, reason);
+    const handleEscalateCase = (caseId: string, escalationData: EscalationData) => {
+    console.log('Escalating case:', caseId, escalationData);
+    
+    // Update case with escalation data
     setCases(prevCases => 
-      prevCases.map(c => 
-        c.id === caseId 
-          ? { ...c, status: 'escalated', updatedAt: new Date() }
-          : c
+      prevCases.map(case_ => 
+        case_.id === caseId 
+          ? { 
+              ...case_, 
+              escalationData,
+              status: 'escalated' as const,
+              lastActivity: new Date().toISOString()
+            }
+          : case_
       )
     );
   };
@@ -160,6 +168,7 @@ const MediReplyPage: React.FC = () => {
         <div className="flex-1 bg-white border-r border-gray-200">
           <ActiveCasePanel
             activeCase={selectedCase}
+            currentUser={mockCurrentUser}
             onSendMessage={handleSendMessage}
             onApproveAIResponse={handleApproveAIResponse}
             onRejectAIResponse={handleRejectAIResponse}
